@@ -1,1 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أكاديمية شووت لكرة القدم</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#0f172a;--mut:#667085;--pri:#111827;--pri2:#2b3445;--on:#fff;--acc:#e11d2e;--bd:#e6e8ec;--bad:#d92d20;--ok:#12a066;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f17;--card:#141a24;--tx:#f1f5f9;--mut:#94a3b8;--pri:#f3f4f6;--pri2:#d1d5db;--on:#0f172a;--acc:#ff4655;--bd:#243044;--bad:#ff6b5e;--ok:#34d399}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Tahoma,"Segoe UI",Arial,sans-serif;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+.hero{background:radial-gradient(circle at 85% 0,rgba(225,29,46,.4),transparent 55%),linear-gradient(160deg,#0f172a,#1e293b);color:#fff;border-radius:28px;text-align:center;padding:32px 16px 26px;margin-top:8px;box-shadow:0 16px 40px rgba(15,23,42,.25)}.hero .lg{width:128px;height:128px;border-radius:50%;background:#fff;padding:6px;object-fit:contain;box-shadow:0 6px 18px rgba(0,0,0,.3)}.hero h1{color:#fff;margin:12px 0 0}.hero .en{letter-spacing:3px;font-weight:700;opacity:.9;font-size:14px}.hero p{margin:8px 0 0;opacity:.9}.ig{display:inline-block;margin-top:14px;background:#e11d2e;color:#fff;text-decoration:none;border-radius:999px;padding:8px 18px;font-weight:700;font-size:14px}footer{text-align:center;padding:20px 0;color:var(--mut);font-size:13px}footer a{color:var(--acc)}
+h1{margin:4px 0;font-size:26px}h2{font-size:19px;margin:0 0 10px}
+.mut{color:var(--mut);font-size:14px}
+.gates{display:grid;gap:14px;margin-top:18px}
+.gate{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:22px;box-shadow:0 4px 14px rgba(0,0,0,.05);transition:transform .15s;text-align:center;cursor:pointer;width:100%;color:var(--tx);font:inherit}
+.gate:hover{border-color:var(--acc);transform:translateY(-2px)}.gate .ic{background:rgba(225,29,46,.1);width:64px;height:64px;border-radius:18px;display:inline-flex;align-items:center;justify-content:center;font-size:32px}
+.gate b{display:block;font-size:18px;margin:6px 0 2px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+.btn{background:var(--pri);color:var(--on);border:0;border-radius:10px;padding:10px 16px;font:inherit;cursor:pointer}
+.btn:hover{background:var(--pri2)}.btn.ghost{background:transparent;color:var(--pri);border:1px solid var(--pri)}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;margin:4px 0 10px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.pl{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.av{width:42px;height:42px;border-radius:50%;background:var(--pri);color:var(--on);display:inline-flex;align-items:center;justify-content:center;font-weight:700;margin-left:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stat{background:var(--bg);border-radius:12px;padding:10px}.stat b{display:block;font-size:24px}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:var(--ok)}
+.row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);font-size:15px}
+.p{color:var(--ok)}.a{color:var(--bad)}
+.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
+.tabs button{flex:1;white-space:nowrap}
+.chk{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.chk input{width:22px;height:22px;margin:0}
+.toast{color:var(--ok);font-size:14px;min-height:20px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<footer>© أكاديمية شووت لكرة القدم · <a href="https://www.instagram.com/shoot_academy_" target="_blank" rel="noopener">@shoot_academy_</a></footer>
+<script>
+var LOGO="IMG_5357.jpeg";
+var KEY="academy_demo_v1";
+var players=[
+{id:1,name:"يوسف أحمد",age:10,cat:"تحت 11"},{id:2,name:"عمر خالد",age:12,cat:"تحت 13"},
+{id:3,name:"سلمان فهد",age:9,cat:"تحت 10"},{id:4,name:"ليث محمد",age:12,cat:"تحت 13"},
+{id:5,name:"ريان علي",age:10,cat:"تحت 11"},{id:6,name:"زياد ناصر",age:9,cat:"تحت 10"}];
+var data={att:{},reports:[]};
+function iso(d){return d.toISOString().slice(0,10)}
+function seed(){
+ var d=new Date();
+ players.forEach(function(p){data.att[p.id]={};
+  for(var i=1;i<=8;i++){var x=new Date(d);x.setDate(d.getDate()-i*2);
+   data.att[p.id][iso(x)]=((p.id*7+i*3)%5)!==0;}});
+ data.reports=[{pid:1,date:iso(new Date(d-86400000*3)),coach:"المدرب سعد",rating:4,text:"تحسن واضح في التمرير والتحكم بالكرة. نوصي بالتركيز على اللياقة."},
+ {pid:2,date:iso(new Date(d-86400000*5)),coach:"المدرب سعد",rating:5,text:"أداء ممتاز والتزام عالٍ في التمارين."}];
+}
+try{var s=localStorage.getItem(KEY);if(s)data=JSON.parse(s);else seed()}catch(e){seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+var app=document.getElementById("app");
+function home(){
+ app.innerHTML='<div class="hero"><img class="lg" src="'+LOGO+'" alt="شعار أكاديمية شووت"><h1>أكاديمية شووت لكرة القدم</h1><div class="en">SHOOT ACADEMY</div><p>نصنع نجوم المستقبل</p><a class="ig" href="https://www.instagram.com/shoot_academy_" target="_blank" rel="noopener">تابعنا على إنستقرام</a></div><div class="gates" style="margin-top:20px"><div class="mut" style="text-align:center">اختر البوابة للمتابعة</div>'+
+ '<button class="gate" onclick="parent()"><div class="ic">👨‍👩‍👦</div><b>بوابة أولياء الأمور</b><span class="mut">تابع تقارير وحضور ابنك دون تسجيل دخول</span></button>'+
+ '<button class="gate" onclick="coachLogin()"><div class="ic">📋</div><b>بوابة المدربين</b><span class="mut">تسجيل الدخول لتحضير اللاعبين وكتابة التقارير</span></button></div>';
+}
+function parent(q){
+ q=q||"";
+ var list=players.filter(function(p){return p.name.indexOf(q)>-1});
+ app.innerHTML='<div class="top"><h2>⚽ أولياء الأمور</h2><button class="btn ghost" onclick="home()">الرئيسية</button></div>'+
+ '<input id="q" placeholder="ابحث باسم اللاعب" value="'+esc(q)+'" oninput="parent(this.value)">'+
+ list.map(function(p){return '<div class="card pl" onclick="profile('+p.id+')"><span><span class="av">'+esc(p.name[0])+'</span>'+esc(p.name)+'</span><span class="mut">'+esc(p.cat)+' ›</span></div>'}).join("")||'<div class="mut">لا توجد نتائج</div>';
+ var i=document.getElementById("q");i.focus();i.setSelectionRange(q.length,q.length);
+}
+function profile(id){
+ var p=players.filter(function(x){return x.id===id})[0],a=data.att[id]||{},ds=Object.keys(a).sort().reverse();
+ var pr=ds.filter(function(d){return a[d]}).length,ab=ds.length-pr,pc=ds.length?Math.round(pr/ds.length*100):0;
+ var reps=data.reports.filter(function(r){return r.pid===id}).sort(function(x,y){return y.date<x.date?-1:1});
+ app.innerHTML='<div class="top"><h2>'+esc(p.name)+'</h2><button class="btn ghost" onclick="parent()">رجوع</button></div>'+
+ '<div class="card"><div class="mut">'+esc(p.cat)+' · '+p.age+' سنوات</div></div>'+
+ '<div class="card"><h2>الحضور والغياب</h2><div class="stats"><div class="stat"><b>'+ds.length+'</b>الحصص</div><div class="stat"><b class="p">'+pr+'</b>حضور</div><div class="stat"><b class="a">'+ab+'</b>غياب</div></div>'+
+ '<div class="bar"><i style="width:'+pc+'%"></i></div><div class="mut">نسبة الالتزام '+pc+'%</div>'+
+ ds.map(function(d){return '<div class="row"><span>'+d+'</span><span class="'+(a[d]?'p">حاضر':'a">غائب')+'</span></div>'}).join("")+'</div>'+
+ '<div class="card"><h2>تقارير المدرب</h2>'+(reps.map(function(r){return '<div class="row" style="display:block"><b>'+esc(r.coach)+'</b> · <span class="mut">'+r.date+'</span> · '+"⭐".repeat(r.rating)+'<div>'+esc(r.text)+'</div></div>'}).join("")||'<div class="mut">لا توجد تقارير بعد</div>')+'</div>';
+}
+function coachLogin(err){
+ app.innerHTML='<div class="top"><h2>دخول المدربين</h2><button class="btn ghost" onclick="home()">الرئيسية</button></div>'+
+ '<div class="card"><label>اسم المستخدم</label><input id="u" autocomplete="username"><label>كلمة المرور</label><input id="pw" type="password" autocomplete="current-password">'+
+ '<button class="btn" style="width:100%" onclick="login()">دخول</button><div class="mut" style="margin-top:8px">'+(err?'<span class="a">بيانات غير صحيحة</span> · ':'')+'تجريبي: coach / 1234</div></div>';
+}
+function login(){
+ if(document.getElementById("u").value==="coach"&&document.getElementById("pw").value==="1234")dash("att");else coachLogin(1);
+}
+function dash(tab,msg){
+ var t='<div class="top"><h2>⚽ لوحة المدرب</h2><button class="btn ghost" onclick="home()">خروج</button></div><div class="tabs">'+
+ [["att","التحضير"],["rep","كتابة تقرير"]].map(function(x){return '<button class="btn'+(x[0]===tab?'':' ghost')+'" onclick="dash(\''+x[0]+'\')">'+x[1]+'</button>'}).join("")+'</div>';
+ if(tab==="att"){
+  var today=iso(new Date());
+  t+='<div class="card"><label>تاريخ الحصة</label><input type="date" id="dt" value="'+today+'" onchange="dashDate()">'+
+  '<div id="list"></div><button class="btn" style="width:100%;margin-top:10px" onclick="saveAtt()">حفظ التحضير</button><div class="toast">'+(msg||"")+'</div></div>';
+  app.innerHTML=t;dashDate();
+ }else{
+  t+='<div class="card"><label>اللاعب</label><select id="rp">'+players.map(function(p){return '<option value="'+p.id+'">'+esc(p.name)+'</option>'}).join("")+'</select>'+
+  '<label>التقييم</label><select id="rt"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3">⭐⭐⭐</option><option value="2">⭐⭐</option><option value="1">⭐</option></select>'+
+  '<label>التقرير</label><textarea id="rx" rows="4"></textarea><button class="btn" style="width:100%" onclick="saveRep()">إرسال التقرير</button><div class="toast">'+(msg||"")+'</div></div>';
+  app.innerHTML=t;
+ }
+}
+function dashDate(){
+ var d=document.getElementById("dt").value;
+ document.getElementById("list").innerHTML=players.map(function(p){var v=data.att[p.id]&&data.att[p.id][d];
+  return '<label class="chk"><input type="checkbox" data-id="'+p.id+'"'+(v?' checked':'')+'><span>'+esc(p.name)+'</span></label>'}).join("");
+}
+function saveAtt(){
+ var d=document.getElementById("dt").value;if(!d)return;
+ document.querySelectorAll("#list input").forEach(function(c){var id=c.dataset.id;data.att[id]=data.att[id]||{};data.att[id][d]=c.checked});
+ save();document.querySelector(".toast").textContent="تم حفظ التحضير ✓";
+}
+function saveRep(){
+ var x=document.getElementById("rx").value.trim();if(!x)return;
+ data.reports.push({pid:+document.getElementById("rp").value,date:iso(new Date()),coach:"المدرب",rating:+document.getElementById("rt").value,text:x});
+ save();dash("rep","تم إرسال التقرير، وسيظهر لولي الأمر ✓");
+}
+home();
+</script>
+</body>
+</html>
 
