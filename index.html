@@ -14,6 +14,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"S
 .hero{background:linear-gradient(160deg,var(--pri),var(--pri2));color:#fff;padding:74px 16px 30px;text-align:center;border-radius:0 0 28px 28px}
 .hero img{width:92px;height:92px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.25);background:#fff}
 .hero h1{margin:10px 0 0;font-size:24px}.hero p{margin:2px 0 0;opacity:.75;font-size:14px}
+.hero .bar{display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:0 auto 6px}
 .topbar{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:10px 12px;z-index:20;pointer-events:none}
 .back{pointer-events:auto;background:#fff;color:#0f1b33;border:0;border-radius:999px;padding:10px 18px;font:inherit;font-weight:700;font-size:15px;box-shadow:0 4px 14px #0006;cursor:pointer}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:14px}
@@ -65,6 +66,10 @@ label{display:block;font-size:13px;color:var(--mut);margin-top:12px}
 .gi img{width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block}
 .lb{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:50;display:grid;place-items:center}
 .lb img{max-width:96%;max-height:90%;border-radius:10px}
+.wa{display:block;text-align:center;text-decoration:none;background:#16a34a;color:#fff;border-radius:12px;padding:12px 14px;font-weight:700;margin-top:10px}
+.tag.org{background:#fef3c7;color:#b45309;border-color:transparent}
+details summary{cursor:pointer;color:var(--mut);font-size:13px;margin-top:10px}
+.money{font-weight:700}
 </style>
 </head>
 <body>
@@ -76,6 +81,8 @@ label{display:block;font-size:13px;color:var(--mut);margin-top:12px}
 var SUPA_URL="https://mfuzalxrstwcibqdzzlc.supabase.co";
 var SUPA_KEY="sb_publishable_edI2u2ntUE6wBNaNl3X94A_9VHDRP2M";
 var LOGO="IMG_5357.jpeg", INSTA="https://www.instagram.com/shoot_academy_";
+var WA=["33364453","33980703"];
+function waUrl(n,t){return"https://wa.me/973"+n+(t?"?text="+encodeURIComponent(t):"")}
 var BR=[
  {id:"karana_main",ar:"فرع كرانة الرئيسي",en:"Karanah Main Branch",ic:"ر"},
  {id:"karana",ar:"فرع كرانة",en:"Karanah Branch",ic:"ك"},
@@ -91,6 +98,31 @@ function today(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+
 function fmt(d){try{return new Date(d+"T00:00:00").toLocaleDateString("ar-BH",{day:"numeric",month:"short"})}catch(e){return d}}
 function ssGet(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
 function ssSet(k,v){try{if(v==null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,v)}catch(e){}}
+function ymd(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function monthFirst(d){d=d||new Date();return ymd(new Date(d.getFullYear(),d.getMonth(),1))}
+function monthLast(d){d=d||new Date();return ymd(new Date(d.getFullYear(),d.getMonth()+1,0))}
+function money(n){return String(+Number(n||0).toFixed(3))+" د.ب"}
+function daysLeft(end){return Math.round((new Date(end+"T00:00:00")-new Date(today()+"T00:00:00"))/864e5)}
+function subTag(s){
+  if(!s||!s.sub_end)return'<span class="tag">بدون اشتراك</span>';
+  var n=daysLeft(s.sub_end);
+  if(n<0)return'<span class="tag red">منتهي منذ '+(-n)+' يوم</span>';
+  if(n===0)return'<span class="tag org">ينتهي اليوم</span>';
+  if(n<=5)return'<span class="tag org">ينتهي بعد '+n+' يوم</span>';
+  return'<span class="tag grn">ساري حتى '+fmt(s.sub_end)+'</span>';
+}
+var GL={small:"الصغار",big:"الكبار"};
+function gfilter(){return S.grp?S.players.filter(function(p){return p.grp===S.grp}):S.players}
+function catLine(p){return esc(p.category||"")+(p.grp?(p.category?" • ":"")+GL[p.grp]:"")}
+function grpChips(fn){
+  var cnt={"":S.players.length,small:0,big:0};S.players.forEach(function(p){if(cnt[p.grp]!==undefined)cnt[p.grp]++});
+  return'<div class="tabs" style="padding:0 0 8px">'+[["","الكل"],["small","الصغار"],["big","الكبار"]].map(function(t){return'<button class="tab '+(S.grp===t[0]?"on":"")+'" onclick="S.grp=\''+t[0]+'\';'+fn+'()">'+t[1]+' ('+cnt[t[0]]+')</button>'}).join("")+'</div>'}
+function subCard(p){
+  if(!p.sub_end)return"";
+  var n=daysLeft(p.sub_end);
+  return'<div class="card"><h2>الاشتراك</h2><div>من '+fmt(p.sub_start)+' إلى '+fmt(p.sub_end)+'</div><div style="margin-top:8px">'+subTag(p)+'</div>'+
+   (n<=5?'<a class="wa" href="'+waUrl(WA[0],"السلام عليكم، أرغب بتجديد اشتراك اللاعب: "+p.name)+'" target="_blank" rel="noopener">💬 تجديد الاشتراك عبر واتساب</a>':'')+'</div>';
+}
 
 /* ====== الاتصال ====== */
 function hdr(){var h={"Content-Type":"application/json",apikey:SUPA_KEY};if(SUPA_KEY.indexOf("eyJ")===0)h.Authorization="Bearer "+SUPA_KEY;return h}
@@ -110,12 +142,13 @@ function errMsg(e){var m=e&&e.message||"";
   if(m.indexOf("FORBIDDEN")>-1)return"ليس لديك صلاحية على هذا الفرع";
   if(m.indexOf("PHOTO_TOO_BIG")>-1)return"الصورة كبيرة";
   if(m.indexOf("BAD_NAME")>-1)return"الاسم قصير";
+  if(m.indexOf("BAD_DATES")>-1)return"تاريخ نهاية الاشتراك قبل تاريخ البدء";
   if(m.indexOf("Failed to fetch")>-1||m.indexOf("NetworkError")>-1)return"تعذر الاتصال بالإنترنت";
   return"حدث خطأ، حاول مرة أخرى"}
 
 var _cur=location.hash;function setHash(h){_cur=h;location.hash=h}
 /* ====== الحالة ====== */
-var S={tok:ssGet("tok"),cname:ssGet("cname"),role:ssGet("role"),brs:(function(){try{return JSON.parse(ssGet("brs")||"null")}catch(e){return null}})(),br:ssGet("cbr")||"karana",tab:"att",day:today(),players:[],att:{},anns:[],sel:null,edit:null,photo:null,pf:null};
+var S={tok:ssGet("tok"),cname:ssGet("cname"),role:ssGet("role"),brs:(function(){try{return JSON.parse(ssGet("brs")||"null")}catch(e){return null}})(),br:ssGet("cbr")||"karana",tab:"att",day:today(),players:[],att:{},anns:[],sel:null,edit:null,photo:null,pf:null,grp:""};
 
 function goBack(){if(history.length>1)history.back();else home()}
 function shell(inner,opts){
@@ -124,7 +157,7 @@ function shell(inner,opts){
   return tb+'<div class="hero'+(opts.home?' home':'')+'">'+
    '<img src="'+LOGO+'" alt="Shoot Academy" onerror="this.style.display=\'none\'">'+
    '<h1>'+esc(opts.title||"أكاديمية شووت لكرة القدم")+'</h1><p class="ltr">'+esc(opts.sub||"Shoot Football Academy")+'</p>'+(opts.tag?'<p class="t2">'+esc(opts.tag)+'</p>':'')+'</div>'+
-   '<div class="wrap">'+inner+'<div class="foot">تابعونا على <a href="'+INSTA+'" target="_blank" rel="noopener">إنستغرام</a><br>© أكاديمية شووت - البحرين</div></div>';
+   '<div class="wrap">'+inner+'<div class="foot">تواصل واتساب: '+WA.map(function(n){return'<a href="'+waUrl(n)+'" target="_blank" rel="noopener" class="ltr">'+n+'</a>'}).join(" • ")+'<br>تابعونا على <a href="'+INSTA+'" target="_blank" rel="noopener">إنستغرام</a><br>© أكاديمية شووت - البحرين</div></div>';
 }
 function render(h){$("app").innerHTML=h;window.scrollTo(0,0)}
 
@@ -137,6 +170,7 @@ function home(){
   var h='<button class="gate" onclick="parents()"><b>👨‍👩‍👦 بوابة أولياء الأمور</b><span>تابع تقارير ابنك وحضوره بدون تسجيل دخول</span></button>'+
    '<button class="gate alt" onclick="coachLogin()"><b>🧢 بوابة المدربين</b><span>تسجيل الدخول لإدارة اللاعبين والحضور والتقارير</span></button>'+
    '<div class="card"><h2>عن الأكاديمية</h2><p style="margin:0">'+esc(TXT("about","نصنع أبطال الغد عبر 5 فروع بالمملكة. نقدم تدريباً احترافياً للأطفال والناشئين لتطوير القاعدة وصقل الموهوبين والمبتدئين وتأهيلهم للأندية والمنتخبات الوطنية، مع متابعة دقيقة وتقارير دورية تُوثّق تطور كل لاعب خطوة بخطوة."))+'</p><div class="chips">'+BR.map(function(b){return'<span class="tag">'+b.ar+'</span>'}).join("")+'</div></div>'+
+   '<div class="card"><h2>تواصل معنا عبر واتساب</h2><div class="muted">للتسجيل والاستفسار عن الاشتراك</div>'+WA.map(function(n){return'<a class="wa" href="'+waUrl(n,"السلام عليكم، أرغب بالاستفسار عن التسجيل في أكاديمية شووت")+'" target="_blank" rel="noopener">💬 واتساب <span class="ltr">'+n+'</span></a>'}).join("")+'</div>'+
    '<h2 style="margin:24px 0 0">صور من الأكاديمية</h2><div class="gal">'+g.map(function(n){return'<div class="gi" onclick="openImg(\''+n+'.jpeg\')"><img loading="lazy" src="'+n+'.jpeg" alt="" onerror="this.parentNode.style.display=\'none\'"></div>'}).join("")+'</div>'+
    '<a class="btn red block" style="display:block;text-align:center;text-decoration:none" href="'+INSTA+'" target="_blank" rel="noopener">تابعنا على إنستغرام</a>';
   render(shell(h,{home:1,tag:TXT("tag","تدريب كرة القدم للأطفال والناشئين في البحرين")}));
@@ -179,6 +213,7 @@ function profile(id,fromCoach){
   rpc("player_profile",{p_id:id}).then(function(d){
     var p=d.player,tot=d.present+d.absent,rate=tot?Math.round(d.present*100/tot):0,b=brn(p.branch);
     var h='<div class="stats"><div class="st ok"><b>'+d.present+'</b><span>أيام الحضور</span></div><div class="st no"><b>'+d.absent+'</b><span>أيام الغياب</span></div><div class="st"><b>'+rate+'%</b><span>نسبة الالتزام</span></div></div>';
+    h+=subCard(p);
     h+='<div class="card"><h2>سجل الحضور</h2>'+(d.days.length?'<div class="dots">'+d.days.map(function(x){return'<div class="dot '+(x.present?"p":"a")+'" title="'+x.day+'">'+(x.present?"✓":"✗")+'</div>'}).join("")+'</div><p class="muted">آخر '+d.days.length+' يوم تدريب • آخر يوم: '+fmt(d.days[0].day)+'</p>':'<p class="muted">لم يسجل الحضور بعد.</p>')+'<div class="bar"><i style="width:'+rate+'%"></i></div></div>';
     if(d.news&&d.news.length)h+='<div class="card"><h2>📢 إعلانات الأكاديمية</h2>'+d.news.map(function(n){return'<div class="news"><b>'+esc(n.title)+'</b><div>'+esc(n.body||"")+'</div><div class="muted">'+fmt(n.day)+'</div></div>'}).join("")+'</div>';
     h+='<div class="card"><h2>تقارير المدربين</h2>';
@@ -191,6 +226,7 @@ function profile(id,fromCoach){
        (r.notes?'<p>'+esc(r.notes)+'</p>':'')+'</div>'});
     h+='</div>';
     h+='<div class="row" style="margin-top:14px"><button class="btn ghost" onclick="shareLink(\''+id+'\')">🔗 مشاركة رابط الملف</button></div>';
+    var top='<div style="display:flex;justify-content:center;margin-top:8px">'+avatar(p,true)+'</div>';
     render(shell(h,{back:fromCoach?"coachHome()":"goBack()",title:p.name,sub:b.ar+(p.category?" • "+p.category:"")}));
     var hero=document.querySelector(".hero img");if(hero&&p.photo){hero.src=p.photo}
   }).catch(function(e){render(shell('<div class="card"><p class="err">'+errMsg(e)+'</p></div>',{back:"home()"}))});
@@ -226,9 +262,10 @@ function coachHome(tab){
   var al=allowed();if(!al.length){S.tok=null;coachLogin("لا توجد فروع لهذا الحساب");return}
   if(!al.some(function(b){return b.id===S.br}))S.br=al[0].id;
   var h='<div class="tabs">'+al.map(function(b){return'<button class="tab '+(b.id===S.br?"on":"")+'" onclick="setBr(\''+b.id+'\')">'+b.ar+'</button>'}).join("")+'</div>';
-  h+='<div class="tabs" style="padding-top:0">'+(S.role==="admin"?[["stats","📊 الإحصائيات"]]:[]).concat([["att","✅ الحضور"],["rep","📝 التقارير"],["pls","👥 اللاعبون"],["ann","📢 إعلانات"]]).map(function(t){return'<button class="tab '+(t[0]===S.tab?"on":"")+'" onclick="coachHome(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div><div id="cb"><p class="muted" style="text-align:center">جاري التحميل…</p></div>';
+  h+='<div class="tabs" style="padding-top:0">'+(S.role==="admin"?[["stats","📊 الإحصائيات"],["fin","💰 المالية"]]:[]).concat([["att","✅ الحضور"],["rep","📝 التقارير"],["pls","👥 اللاعبون"],["ann","📢 إعلانات"]]).map(function(t){return'<button class="tab '+(t[0]===S.tab?"on":"")+'" onclick="coachHome(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div><div id="cb"><p class="muted" style="text-align:center">جاري التحميل…</p></div>';
   render(shell(h,{out:true,title:"أهلاً "+(S.cname||"مدرب"),sub:brn(S.br).en}));
   if(S.tab==="stats"&&S.role==="admin"){rpc("admin_stats",{p_tok:S.tok,p_day:today()}).then(viewStats).catch(authFail);return}
+  if(S.tab==="fin"&&S.role==="admin"){loadFin();return}
   rpc("coach_players",{p_tok:S.tok,p_branch:S.br}).then(function(pl){S.players=pl;
     if(S.tab==="att")return rpc("coach_att_get",{p_tok:S.tok,p_branch:S.br,p_day:S.day}).then(function(a){S.att={};a.forEach(function(x){S.att[x.id]=x.present});viewAtt()});
     if(S.tab==="rep")return viewRep();
@@ -237,6 +274,7 @@ function coachHome(tab){
   }).catch(authFail);
 }
 function setBr(id){S.br=id;ssSet("cbr",id);coachHome()}
+document.addEventListener("DOMContentLoaded",function(){});
 
 /* --- الإحصائيات (للمدير فقط) --- */
 function viewStats(a){
@@ -247,15 +285,32 @@ function viewStats(a){
   $("cb").innerHTML=h;
 }
 
+/* --- المالية (للمدير فقط) --- */
+S.fm=today().slice(0,7);
+function loadFin(){rpc("admin_finance",{p_tok:S.tok,p_month:S.fm+"-01"}).then(viewFin).catch(authFail)}
+function viewFin(a){
+  var T=0,C=0,N=0;a.forEach(function(x){T+=+x.total;C+=+x.collected;N+=+x.subs});
+  var h='<div class="card"><label style="margin-top:0">الشهر</label><input type="month" value="'+S.fm+'" onchange="S.fm=this.value||today().slice(0,7);loadFin()">'+
+   '<div class="muted" style="margin-top:6px">يُحسب كل اشتراك يبدأ تاريخه داخل الشهر المختار • عدد المشتركين: '+N+'</div></div>'+
+   '<div class="stats"><div class="st"><b style="font-size:17px;white-space:nowrap">'+money(T)+'</b><span>إجمالي المدخول</span></div><div class="st ok"><b style="font-size:17px;white-space:nowrap">'+money(C)+'</b><span>المحصّل</span></div><div class="st no"><b style="font-size:17px;white-space:nowrap">'+money(T-C)+'</b><span>المتبقي</span></div></div>';
+  a.forEach(function(x){var b=brn(x.branch),pc=+x.total?Math.round(x.collected*100/x.total):0;
+    h+='<div class="card"><h2>'+b.ar+'</h2><div class="row sp" style="flex-wrap:wrap"><span class="tag">مشتركون '+x.subs+'</span><span class="tag">المدخول '+money(x.total)+'</span><span class="tag grn">محصّل '+money(x.collected)+'</span><span class="tag red">متبقي '+money(x.total-x.collected)+'</span></div>'+
+     '<div class="bar"><i style="width:'+pc+'%"></i></div>'+
+     (x.unpaid.length?'<details><summary>غير المدفوعين ('+x.unpaid.length+')</summary>'+x.unpaid.map(function(u){return'<div class="pl static" style="cursor:default"><div style="flex:1"><div class="n">'+esc(u.name)+'</div><div class="c">'+money(u.price)+'</div></div><button class="btn sm fit" onclick="markPaid(\''+u.id+'\')">تم الدفع</button></div>'}).join("")+'</details>':'<p class="muted" style="margin-bottom:0">لا توجد مبالغ متبقية ✓</p>')+'</div>'});
+  $("cb").innerHTML=h;
+}
+function markPaid(id){if(!confirm("تأكيد استلام المبلغ؟"))return;rpc("admin_mark_paid",{p_tok:S.tok,p_player:id,p_paid:true}).then(function(){toast("تم تسجيل الدفع");loadFin()}).catch(authFail)}
+
 /* --- الحضور --- */
 function viewAtt(){
-  var pres=0,abs=0;S.players.forEach(function(p){if(S.att[p.id]===true)pres++;else if(S.att[p.id]===false)abs++});
-  var h='<div class="card"><label style="margin-top:0">تاريخ التدريب</label><input type="date" value="'+S.day+'" max="'+today()+'" onchange="S.day=this.value||today();coachHome(\'att\')">'+
-   '<div class="row sp" style="margin-top:12px"><span class="tag grn">حاضر '+pres+'</span><span class="tag red">غائب '+abs+'</span><span class="tag">بدون تسجيل '+(S.players.length-pres-abs)+'</span></div>'+
-   (S.players.length?'<button class="btn ghost sm" style="margin-top:12px" onclick="allPresent()">الكل حاضر</button>':'')+'</div>';
+  var L=gfilter(),pres=0,abs=0;L.forEach(function(p){if(S.att[p.id]===true)pres++;else if(S.att[p.id]===false)abs++});
+  var h=(S.players.length?grpChips("viewAtt"):"")+'<div class="card"><label style="margin-top:0">تاريخ التدريب</label><input type="date" value="'+S.day+'" max="'+today()+'" onchange="S.day=this.value||today();coachHome(\'att\')">'+
+   '<div class="row sp" style="margin-top:12px"><span class="tag grn">حاضر '+pres+'</span><span class="tag red">غائب '+abs+'</span><span class="tag">بدون تسجيل '+(L.length-pres-abs)+'</span></div>'+
+   (S.players.length?'<button class="btn ghost sm" style="margin-top:12px" onclick="allPresent()">الكل حاضر</button>':'')+
+   '<div style="border-top:1px solid var(--line);margin-top:14px;padding-top:12px"><label style="margin-top:0">تقرير الحضور الشهري (PDF)</label><div class="row"><input type="month" id="pm" value="'+S.day.slice(0,7)+'" style="margin:0"><select id="pgf" style="margin:0"><option value="">كل الفئات</option><option value="small"'+(S.grp==="small"?" selected":"")+'>الصغار</option><option value="big"'+(S.grp==="big"?" selected":"")+'>الكبار</option></select></div><button class="btn sm block" id="pb" onclick="attPdf()">📄 تنزيل التقرير</button></div></div>';
   if(!S.players.length)h+='<div class="card"><p class="muted">لا يوجد لاعبون في هذا الفرع. أضفهم من تبويب «اللاعبون».</p></div>';
-  S.players.forEach(function(p){var v=S.att[p.id];
-    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+esc(p.category||"")+'</div></div>'+
+  L.forEach(function(p){var v=S.att[p.id];
+    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+catLine(p)+'</div></div>'+
      '<div class="att"><button class="p '+(v===true?"on":"")+'" onclick="mark(\''+p.id+'\',true)">حاضر</button><button class="a '+(v===false?"on":"")+'" onclick="mark(\''+p.id+'\',false)">غائب</button></div></div>'});
   $("cb").innerHTML=h;
 }
@@ -264,9 +319,9 @@ function mark(id,v){
   rpc("coach_att_set",{p_tok:S.tok,p_day:S.day,p_items:[{id:id,present:v}]}).then(function(){toast("تم الحفظ")}).catch(function(e){S.att[id]=old;viewAtt();authFail(e)});
 }
 function allPresent(){
-  if(!confirm("تسجيل كل اللاعبين حاضرين؟"))return;
-  var items=S.players.map(function(p){return{id:p.id,present:true}});
-  rpc("coach_att_set",{p_tok:S.tok,p_day:S.day,p_items:items}).then(function(){S.players.forEach(function(p){S.att[p.id]=true});viewAtt();toast("تم الحفظ")}).catch(authFail);
+  var L=gfilter();if(!confirm(S.grp?"تسجيل كل لاعبي "+GL[S.grp]+" حاضرين؟":"تسجيل كل اللاعبين حاضرين؟"))return;
+  var items=L.map(function(p){return{id:p.id,present:true}});
+  rpc("coach_att_set",{p_tok:S.tok,p_day:S.day,p_items:items}).then(function(){L.forEach(function(p){S.att[p.id]=true});viewAtt();toast("تم الحفظ")}).catch(authFail);
 }
 
 /* --- التقارير --- */
@@ -298,9 +353,9 @@ function delRep(id){if(!confirm("حذف هذا التقرير؟"))return;rpc("co
 
 /* --- اللاعبون --- */
 function viewPls(){
-  var h='<div class="card"><div class="row sp"><h2 style="margin:0">لاعبو '+brn(S.br).ar+' ('+S.players.length+')</h2><button class="btn red sm fit" onclick="editPl(null)">+ إضافة</button></div></div>';
-  S.players.forEach(function(p){
-    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+esc(p.category||"")+'</div></div>'+
+  var h=(S.players.length?grpChips("viewPls"):"")+'<div class="card"><div class="row sp"><h2 style="margin:0">لاعبو '+brn(S.br).ar+' ('+S.players.length+')</h2><button class="btn red sm fit" onclick="editPl(null)">+ إضافة</button></div></div>';
+  gfilter().forEach(function(p){
+    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+catLine(p)+'</div><div style="margin-top:4px">'+subTag(p)+(S.role==="admin"&&p.price!=null?' <span class="tag">'+money(p.price)+'</span> '+(p.paid?'<span class="tag grn">مدفوع</span>':'<span class="tag red">غير مدفوع</span>'):'')+'</div></div>'+
      '<button class="btn ghost sm fit" onclick="profile(\''+p.id+'\',true)">الملف</button><button class="btn ghost sm fit" onclick="editPl(\''+p.id+'\')">تعديل</button></div>'});
   $("cb").innerHTML=h;
 }
@@ -308,9 +363,13 @@ function editPl(id){
   var p=null;S.players.forEach(function(x){if(x.id===id)p=x});S.edit=id;S.photo=p?p.photo||"":"";
   var h='<div class="card"><h2>'+(p?"تعديل لاعب":"إضافة لاعب جديد")+'</h2><label style="margin-top:0">اسم اللاعب</label><input id="pn" value="'+esc(p?p.name:"")+'" placeholder="الاسم الثلاثي">'+
    '<label>الفئة العمرية</label><input id="pc" value="'+esc(p?p.category||"":"")+'" placeholder="مثال: تحت 10 سنوات">'+
+   '<label>فئة اللاعب (تظهر للمدربين فقط)</label><select id="pg"><option value="">غير محدد</option><option value="small"'+((p?p.grp:S.grp)==="small"?" selected":"")+'>الصغار</option><option value="big"'+((p?p.grp:S.grp)==="big"?" selected":"")+'>الكبار</option></select>'+
+   '<label>تاريخ بداية الاشتراك</label><input type="date" id="ps" value="'+(p&&p.sub_start?p.sub_start:monthFirst())+'">'+
+   '<label>تاريخ نهاية الاشتراك</label><input type="date" id="pe" value="'+(p&&p.sub_end?p.sub_end:monthLast())+'">'+
+   (S.role==="admin"?'<label>سعر الاشتراك (د.ب)</label><input type="number" inputmode="decimal" step="0.5" min="0" id="pp" value="'+(p&&p.price!=null?p.price:20)+'"><label>حالة الدفع</label><select id="pd"><option value="0">غير مدفوع</option><option value="1"'+(p&&p.paid?" selected":"")+'>مدفوع</option></select>':'')+
    '<label>الصورة (اختياري)</label><div class="row" style="margin-top:6px"><div id="pv" class="fit">'+(S.photo?'<img class="av" src="'+esc(S.photo)+'">':'<div class="av">?</div>')+'</div><input type="file" accept="image/*" onchange="pickPhoto(this)" style="margin:0"></div>'+
    '<div class="row" style="margin-top:14px"><button class="btn red" id="sb" onclick="savePl()">حفظ</button><button class="btn ghost" onclick="coachHome(\'pls\')">إلغاء</button></div>'+
-   (p?'<button class="btn ghost block" style="color:var(--no)" onclick="rmPl()">إزالة اللاعب من الفرع</button>':'')+'</div>';
+   (p?'<button class="btn ghost block" onclick="renewForm()">🔄 تجديد الاشتراك (شهر جديد)</button><button class="btn ghost block" style="color:var(--no)" onclick="rmPl()">إزالة اللاعب من الفرع</button>':'')+'</div>';
   $("cb").innerHTML=h;
 }
 function pickPhoto(inp){
@@ -327,11 +386,89 @@ function pickPhoto(inp){
 }
 function savePl(){
   var n=$("pn").value.trim();if(n.length<2){toast("اكتب اسم اللاعب");return}
+  var s1=$("ps").value,s2=$("pe").value;if(!s1||!s2){toast("حدد تاريخ بداية ونهاية الاشتراك");return}
+  if(s2<s1){toast("تاريخ النهاية قبل البداية");return}
+  var adm=S.role==="admin",pr=adm?parseFloat($("pp").value):null;if(adm&&isNaN(pr))pr=null;
+  var pd=adm?$("pd").value==="1":null;
   $("sb").disabled=true;
-  var c=$("pc").value.trim(),p=S.edit?rpc("coach_update_player",{p_tok:S.tok,p_id:S.edit,p_name:n,p_cat:c,p_photo:S.photo||""}):rpc("coach_add_player",{p_tok:S.tok,p_branch:S.br,p_name:n,p_cat:c,p_photo:S.photo||""});
-  p.then(function(){toast("تم الحفظ");coachHome("pls")}).catch(function(e){$("sb").disabled=false;authFail(e)});
+  var ex={p_start:s1,p_end:s2,p_price:pr,p_paid:pd};
+  var c=$("pc").value.trim(),p=S.edit?rpc("coach_update_player",Object.assign({p_tok:S.tok,p_id:S.edit,p_name:n,p_cat:c,p_photo:S.photo||""},ex)):rpc("coach_add_player",Object.assign({p_tok:S.tok,p_branch:S.br,p_name:n,p_cat:c,p_photo:S.photo||""},ex));
+  var g=$("pg").value,cur=null;S.players.forEach(function(x){if(x.id===S.edit)cur=x});
+  p.then(function(r){var id=S.edit||(r&&r.id),og=cur?(cur.grp||""):"";if(id&&g!==og)return rpc("coach_set_group",{p_tok:S.tok,p_id:id,p_grp:g})})
+   .then(function(){toast("تم الحفظ");coachHome("pls")}).catch(function(e){$("sb").disabled=false;authFail(e)});
 }
 function rmPl(){if(!confirm("إزالة هذا اللاعب من الفرع؟ لن يظهر لأولياء الأمور."))return;rpc("coach_remove_player",{p_tok:S.tok,p_id:S.edit}).then(function(){toast("تمت الإزالة");coachHome("pls")}).catch(authFail)}
+
+/* --- تجديد الاشتراك --- */
+function renewForm(){
+  var p=null;S.players.forEach(function(x){if(x.id===S.edit)p=x});if(!p)return;
+  var base=p.sub_end?new Date(p.sub_end+"T00:00:00"):new Date();
+  var nx=new Date(base.getFullYear(),base.getMonth()+1,1),cur=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+  if(nx<cur)nx=cur;
+  var h='<div class="card"><h2>تجديد اشتراك: '+esc(p.name)+'</h2><div class="muted">الاشتراك السابق يبقى محفوظاً في السجل.</div>'+
+   '<label>تاريخ بداية الاشتراك الجديد</label><input type="date" id="rs1" value="'+monthFirst(nx)+'">'+
+   '<label>تاريخ النهاية</label><input type="date" id="rs2" value="'+monthLast(nx)+'">'+
+   (S.role==="admin"?'<label>السعر (د.ب)</label><input type="number" inputmode="decimal" step="0.5" min="0" id="rpr" value="'+(p.price!=null?p.price:20)+'"><label>حالة الدفع</label><select id="rpd"><option value="0">غير مدفوع</option><option value="1">مدفوع</option></select>':'')+
+   '<div class="row" style="margin-top:14px"><button class="btn red" id="rb2" onclick="doRenew()">تجديد</button><button class="btn ghost" onclick="editPl(S.edit)">إلغاء</button></div></div>';
+  $("cb").innerHTML=h;
+}
+function doRenew(){
+  var s1=$("rs1").value,s2=$("rs2").value;if(!s1||!s2||s2<s1){toast("تحقق من التواريخ");return}
+  var adm=S.role==="admin",pr=adm?parseFloat($("rpr").value):null;if(adm&&isNaN(pr))pr=null;
+  $("rb2").disabled=true;
+  rpc("coach_renew",{p_tok:S.tok,p_id:S.edit,p_start:s1,p_end:s2,p_price:pr,p_paid:adm?$("rpd").value==="1":null})
+   .then(function(){toast("تم التجديد");coachHome("pls")}).catch(function(e){$("rb2").disabled=false;authFail(e)});
+}
+
+/* --- تقرير الحضور الشهري PDF --- */
+var _libs={};
+function loadJs(u){return _libs[u]||(_libs[u]=new Promise(function(ok,no){var s=document.createElement("script");s.src=u;s.onload=ok;s.onerror=function(){_libs[u]=null;no(new Error("LIB"))};document.head.appendChild(s)}))}
+var WD=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+var MN=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+function attPdf(){
+  var m=$("pm").value;if(!m){toast("اختر الشهر");return}
+  var b=$("pb");b.disabled=true;b.textContent="جاري التجهيز…";
+  var reset=function(){b.disabled=false;b.textContent="📄 تنزيل التقرير"};
+  Promise.all([rpc("coach_att_month",{p_tok:S.tok,p_branch:S.br,p_month:m+"-01"}),
+    loadJs("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
+    loadJs("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js")])
+  .then(function(r){return buildPdf(r[0],m,$("pgf")?$("pgf").value:"")}).then(function(ok){reset();if(ok)toast("تم إنشاء الملف")})
+  .catch(function(e){reset();if((e.message||"")==="LIB")toast("تعذر تحميل أداة PDF، تأكد من الإنترنت");else authFail(e)});
+}
+function buildPdf(d,m,g){
+  if(g){var ids={};d.players=d.players.filter(function(p){if(p.grp===g){ids[p.id]=1;return true}return false});d.rows=d.rows.filter(function(x){return ids[x.id]})}
+  var set={};d.rows.forEach(function(x){set[x.day]=1});
+  var list=Object.keys(set).sort();
+  if(!list.length||!d.players.length){toast("لا يوجد حضور مسجل لهذا الشهر");return Promise.resolve(false)}
+  var y=+m.slice(0,4),mo=+m.slice(5,7)-1,first=new Date(y,mo,1).getDay(),weeks=[];
+  list.forEach(function(ds){var w=Math.ceil((+ds.slice(8,10)+first)/7),g=null;weeks.forEach(function(x){if(x.n===w)g=x});if(!g){g={n:w,days:[]};weeks.push(g)}g.days.push(ds)});
+  var st={};d.rows.forEach(function(x){st[x.id+"|"+x.day]=x.present});
+  var TH="border:1px solid #334155;padding:6px 4px;background:#0f1b33;color:#fff;font-weight:700",TD="border:1px solid #cbd5e1;padding:6px 4px";
+  var per=18,pages=Math.ceil(d.players.length/per);
+  function page(i){
+    var h='<div style="width:1100px;padding:18px;background:#fff;color:#0f172a;font-family:-apple-system,Tahoma,Arial,sans-serif;direction:rtl">'+
+     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:22px;font-weight:700">أكاديمية شووت لكرة القدم</div><div style="font-size:14px;color:#475569">تقرير الحضور الشهري • '+esc(brn(S.br).ar)+' • '+MN[mo]+' '+y+(g?' • '+GL[g]:'')+'</div></div><div style="font-size:12px;color:#64748b">صفحة '+(i+1)+' من '+pages+'</div></div>'+
+     '<table style="border-collapse:collapse;width:100%;font-size:13px;text-align:center"><tr><th rowspan="2" style="'+TH+'">#</th><th rowspan="2" style="'+TH+';text-align:right;min-width:170px">اللاعب</th>'+
+     weeks.map(function(w){return'<th colspan="'+w.days.length+'" style="'+TH+'">الأسبوع '+w.n+'</th>'}).join("")+
+     '<th rowspan="2" style="'+TH+';background:#166534">أيام الحضور</th><th rowspan="2" style="'+TH+';background:#991b1b">الغياب</th></tr><tr>'+
+     weeks.map(function(w){return w.days.map(function(ds){return'<th style="'+TH+';background:#1e2d4d">'+(+ds.slice(8,10))+'<div style="font-size:9px;font-weight:400">'+WD[new Date(ds+"T00:00:00").getDay()]+'</div></th>'}).join("")}).join("")+'</tr>';
+    d.players.slice(i*per,i*per+per).forEach(function(p,k){
+      var pr=0,ab=0;
+      h+='<tr><td style="'+TD+'">'+(i*per+k+1)+'</td><td style="'+TD+';text-align:right;font-weight:600">'+esc(p.name)+'</td>'+
+       list.map(function(ds){var v=st[p.id+"|"+ds];if(v===true)pr++;else if(v===false)ab++;
+         return'<td style="'+TD+';'+(v===true?'color:#16a34a;background:#f0fdf4;font-weight:700">✓':v===false?'color:#dc2626;background:#fef2f2;font-weight:700">✗':'color:#cbd5e1">–')+'</td>'}).join("")+
+       '<td style="'+TD+';font-weight:700;color:#166534">'+pr+'</td><td style="'+TD+';font-weight:700;color:#991b1b">'+ab+'</td></tr>'});
+    return h+'</table><div style="margin-top:8px;font-size:11px;color:#64748b">✓ حاضر • ✗ غائب • – لم يُسجّل • الأيام المعروضة هي أيام التدريب المسجلة فقط</div></div>';
+  }
+  var JS=window.jspdf.jsPDF,pdf=new JS({orientation:"landscape",unit:"mm",format:"a4"}),pw=297,ph=210;
+  var host=document.createElement("div");host.style.cssText="position:fixed;left:-20000px;top:0";document.body.appendChild(host);
+  var chain=Promise.resolve();
+  for(var i=0;i<pages;i++)(function(i){chain=chain.then(function(){host.innerHTML=page(i);return window.html2canvas(host.firstChild,{scale:2,backgroundColor:"#ffffff"})}).then(function(cv){
+    var w=pw-16,h=cv.height*w/cv.width;if(h>ph-16){h=ph-16;w=cv.width*h/cv.height}
+    if(i>0)pdf.addPage();
+    pdf.addImage(cv.toDataURL("image/jpeg",0.92),"JPEG",(pw-w)/2,8,w,h)})})(i);
+  return chain.then(function(){host.remove();pdf.save("attendance-"+S.br+"-"+m+".pdf");return true},function(e){host.remove();throw e});
+}
 
 /* --- الإعلانات --- */
 function viewAnn(){
