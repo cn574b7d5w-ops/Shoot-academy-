@@ -1,129 +1,328 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>أكاديمية شووت لكرة القدم</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أكاديمية شووت لكرة القدم | Shoot Academy</title>
+<meta name="description" content="بوابة أولياء الأمور والمدربين - أكاديمية شووت لكرة القدم في البحرين">
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--tx:#0f172a;--mut:#667085;--pri:#111827;--pri2:#2b3445;--on:#fff;--acc:#e11d2e;--bd:#e6e8ec;--bad:#d92d20;--ok:#12a066;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0f17;--card:#141a24;--tx:#f1f5f9;--mut:#94a3b8;--pri:#f3f4f6;--pri2:#d1d5db;--on:#0f172a;--acc:#ff4655;--bd:#243044;--bad:#ff6b5e;--ok:#34d399}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:Tahoma,"Segoe UI",Arial,sans-serif;line-height:1.6}
-.wrap{max-width:720px;margin:0 auto;padding:16px}
-.hero{background:radial-gradient(circle at 85% 0,rgba(225,29,46,.4),transparent 55%),linear-gradient(160deg,#0f172a,#1e293b);color:#fff;border-radius:28px;text-align:center;padding:32px 16px 26px;margin-top:8px;box-shadow:0 16px 40px rgba(15,23,42,.25)}.hero .lg{width:128px;height:128px;border-radius:50%;background:#fff;padding:6px;object-fit:contain;box-shadow:0 6px 18px rgba(0,0,0,.3)}.hero h1{color:#fff;margin:12px 0 0}.hero .en{letter-spacing:3px;font-weight:700;opacity:.9;font-size:14px}.hero p{margin:8px 0 0;opacity:.9}.ig{display:inline-block;margin-top:14px;background:#e11d2e;color:#fff;text-decoration:none;border-radius:999px;padding:8px 18px;font-weight:700;font-size:14px}footer{text-align:center;padding:20px 0;color:var(--mut);font-size:13px}footer a{color:var(--acc)}
-h1{margin:4px 0;font-size:26px}h2{font-size:19px;margin:0 0 10px}
-.mut{color:var(--mut);font-size:14px}
-.gates{display:grid;gap:14px;margin-top:18px}
-.gate{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:22px;box-shadow:0 4px 14px rgba(0,0,0,.05);transition:transform .15s;text-align:center;cursor:pointer;width:100%;color:var(--tx);font:inherit}
-.gate:hover{border-color:var(--acc);transform:translateY(-2px)}.gate .ic{background:rgba(225,29,46,.1);width:64px;height:64px;border-radius:18px;display:inline-flex;align-items:center;justify-content:center;font-size:32px}
-.gate b{display:block;font-size:18px;margin:6px 0 2px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
-.btn{background:var(--pri);color:var(--on);border:0;border-radius:10px;padding:10px 16px;font:inherit;cursor:pointer}
-.btn:hover{background:var(--pri2)}.btn.ghost{background:transparent;color:var(--pri);border:1px solid var(--pri)}
-input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;margin:4px 0 10px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
-.pl{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.av{width:42px;height:42px;border-radius:50%;background:var(--pri);color:var(--on);display:inline-flex;align-items:center;justify-content:center;font-weight:700;margin-left:10px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
-.stat{background:var(--bg);border-radius:12px;padding:10px}.stat b{display:block;font-size:24px}
-.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:var(--ok)}
-.row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);font-size:15px}
-.p{color:var(--ok)}.a{color:var(--bad)}
-.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
-.tabs button{flex:1;white-space:nowrap}
-.chk{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
-.chk input{width:22px;height:22px;margin:0}
-.toast{color:var(--ok);font-size:14px;min-height:20px}
+:root{--bg:#f3f5f9;--card:#fff;--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--pri:#0f1b33;--pri2:#1e2d4d;--acc:#e11d2e;--ok:#16a34a;--okbg:#dcfce7;--no:#dc2626;--nobg:#fee2e2;--r:16px}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#131c2e;--ink:#e8edf6;--mut:#94a3b8;--line:#243049;--pri:#0a1020;--pri2:#1b2a47;--okbg:#0f3a22;--nobg:#4a1717}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 40px}
+.hero{background:linear-gradient(160deg,var(--pri),var(--pri2));color:#fff;padding:26px 16px 30px;text-align:center;border-radius:0 0 28px 28px}
+.hero img{width:92px;height:92px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.25);background:#fff}
+.hero h1{margin:10px 0 0;font-size:24px}.hero p{margin:2px 0 0;opacity:.75;font-size:14px}
+.hero .bar{display:flex;justify-content:space-between;align-items:center;max-width:760px;margin:0 auto 6px}
+.back{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:12px;padding:8px 14px;font:inherit;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:14px}
+h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:0 0 6px}
+.gate{display:block;width:100%;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:14px;font:inherit;color:var(--ink);cursor:pointer;border-inline-start:5px solid var(--acc)}
+.gate b{display:block;font-size:18px}.gate span{color:var(--mut);font-size:13px}
+.gate.alt{border-inline-start-color:var(--pri2)}
+.br{display:flex;align-items:center;gap:12px}.br .ic{width:44px;height:44px;border-radius:12px;background:var(--pri);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.br small{display:block;color:var(--mut);direction:ltr;text-align:right}
+input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;margin-top:6px}
+textarea{min-height:80px;resize:vertical}
+label{display:block;font-size:13px;color:var(--mut);margin-top:12px}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:12px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer}
+.btn.red{background:var(--acc)}.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn.sm{padding:8px 12px;font-size:13px}.btn.block{width:100%;margin-top:14px}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}.sp{justify-content:space-between}.row .fit{flex:none}
+.pl{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;margin-top:10px;background:var(--card);cursor:pointer}
+.pl.static{cursor:default}
+.av{width:48px;height:48px;border-radius:50%;background:var(--pri2);color:#fff;display:grid;place-items:center;font-weight:700;object-fit:cover;flex:none;overflow:hidden}
+.av.big{width:84px;height:84px;font-size:30px;border:3px solid rgba(255,255,255,.3)}
+.pl .n{font-weight:600}.pl .c{color:var(--mut);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.st b{display:block;font-size:26px}.st span{font-size:12px;color:var(--mut)}
+.st.ok b{color:var(--ok)}.st.no b{color:var(--no)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:14px 0 2px}
+.tab{flex:none;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.tab.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.dots{display:flex;flex-wrap:wrap;gap:5px}.dot{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:11px}
+.dot.p{background:var(--okbg);color:var(--ok)}.dot.a{background:var(--nobg);color:var(--no)}
+.tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:var(--bg);border:1px solid var(--line);color:var(--mut)}
+.tag.red{background:var(--nobg);color:var(--no);border-color:transparent}.tag.grn{background:var(--okbg);color:var(--ok);border-color:transparent}
+.rep{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.rep:first-of-type{border:0;padding:0;margin:0}
+.rep p{margin:4px 0}.stars{color:#f59e0b;letter-spacing:2px}
+.need{background:var(--nobg);border-radius:10px;padding:8px 10px;margin:6px 0}.str{background:var(--okbg);border-radius:10px;padding:8px 10px;margin:6px 0}
+.muted{color:var(--mut);font-size:13px}.err{color:var(--no);font-size:14px;margin-top:8px}
+.att{display:flex;gap:6px}.att button{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer;min-width:62px}
+.att .p.on{background:var(--ok);color:#fff;border-color:var(--ok)}.att .a.on{background:var(--no);color:#fff;border-color:var(--no)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--pri);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;z-index:9;box-shadow:0 6px 20px #0004}
+.foot{text-align:center;color:var(--mut);font-size:13px;margin-top:26px}.foot a{color:var(--acc);text-decoration:none;font-weight:600}
+.news{border-inline-start:4px solid var(--acc);padding:4px 12px;margin-top:10px}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--ok)}
+.ltr{direction:ltr;unicode-bidi:plaintext}
 </style>
 </head>
 <body>
-<div class="wrap" id="app"></div>
-<footer>© أكاديمية شووت لكرة القدم · <a href="https://www.instagram.com/shoot_academy_" target="_blank" rel="noopener">@shoot_academy_</a></footer>
+<div id="app"></div>
+<div id="toast" class="toast" style="display:none"></div>
 <script>
-var LOGO="IMG_5357.jpeg";
-var KEY="academy_demo_v1";
-var players=[
-{id:1,name:"يوسف أحمد",age:10,cat:"تحت 11"},{id:2,name:"عمر خالد",age:12,cat:"تحت 13"},
-{id:3,name:"سلمان فهد",age:9,cat:"تحت 10"},{id:4,name:"ليث محمد",age:12,cat:"تحت 13"},
-{id:5,name:"ريان علي",age:10,cat:"تحت 11"},{id:6,name:"زياد ناصر",age:9,cat:"تحت 10"}];
-var data={att:{},reports:[]};
-function iso(d){return d.toISOString().slice(0,10)}
-function seed(){
- var d=new Date();
- players.forEach(function(p){data.att[p.id]={};
-  for(var i=1;i<=8;i++){var x=new Date(d);x.setDate(d.getDate()-i*2);
-   data.att[p.id][iso(x)]=((p.id*7+i*3)%5)!==0;}});
- data.reports=[{pid:1,date:iso(new Date(d-86400000*3)),coach:"المدرب سعد",rating:4,text:"تحسن واضح في التمرير والتحكم بالكرة. نوصي بالتركيز على اللياقة."},
- {pid:2,date:iso(new Date(d-86400000*5)),coach:"المدرب سعد",rating:5,text:"أداء ممتاز والتزام عالٍ في التمارين."}];
+/* ====== إعدادات الاتصال بقاعدة البيانات (تلصقها مرة واحدة) ====== */
+var SUPA_URL="https://mfuzalxrstwcibqdzzlc.supabase.co";
+var SUPA_KEY="sb_publishable_edI2u2ntUE6wBNaNl3X94A_9VHDRP2M";
+var LOGO="IMG_5357.jpeg", INSTA="https://www.instagram.com/shoot_academy_";
+var BR=[
+ {id:"karana",ar:"فرع كرانة",en:"Karanah Branch",ic:"ك"},
+ {id:"hamad",ar:"فرع مدينة حمد",en:"Madinat Hamad Branch",ic:"ح"},
+ {id:"isa",ar:"فرع مدينة عيسى الاستقلال",en:"Madinat Isa – Al-Istiqlal Branch",ic:"ع"},
+ {id:"tashan",ar:"فرع طشان",en:"Tashan Branch",ic:"ط"}];
+var LEVELS=["تطور ممتاز","تطور جيد","مستقر","يحتاج دعم"];
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function brn(id){for(var i=0;i<BR.length;i++)if(BR[i].id===id)return BR[i];return BR[0]}
+function toast(m){var t=$("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display="none"},2200)}
+function today(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function fmt(d){try{return new Date(d+"T00:00:00").toLocaleDateString("ar-BH",{day:"numeric",month:"short"})}catch(e){return d}}
+function ssGet(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+function ssSet(k,v){try{if(v==null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,v)}catch(e){}}
+
+/* ====== الاتصال ====== */
+function hdr(){var h={"Content-Type":"application/json",apikey:SUPA_KEY};if(SUPA_KEY.indexOf("eyJ")===0)h.Authorization="Bearer "+SUPA_KEY;return h}
+function rpc(fn,args){
+  if(SUPA_KEY.indexOf("PASTE")===0)return Promise.reject(new Error("SETUP"));
+  return fetch(SUPA_URL+"/rest/v1/rpc/"+fn,{method:"POST",
+    headers:hdr(),
+    body:JSON.stringify(args||{})}).then(function(r){return r.text().then(function(t){
+      var j;try{j=t?JSON.parse(t):null}catch(e){j=null}
+      if(!r.ok)throw new Error((j&&(j.message||j.hint))||"ERR");
+      return j})});
 }
-try{var s=localStorage.getItem(KEY);if(s)data=JSON.parse(s);else seed()}catch(e){seed()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
-function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-var app=document.getElementById("app");
+function errMsg(e){var m=e&&e.message||"";
+  if(m==="SETUP")return"الموقع لم يربط بقاعدة البيانات بعد.";
+  if(m.indexOf("BAD_LOGIN")>-1)return"اسم المستخدم أو الرقم السري غير صحيح";
+  if(m.indexOf("AUTH")>-1)return"انتهت الجلسة، سجّل الدخول مرة أخرى";
+  if(m.indexOf("PHOTO_TOO_BIG")>-1)return"الصورة كبيرة";
+  if(m.indexOf("BAD_NAME")>-1)return"الاسم قصير";
+  if(m.indexOf("Failed to fetch")>-1||m.indexOf("NetworkError")>-1)return"تعذر الاتصال بالإنترنت";
+  return"حدث خطأ، حاول مرة أخرى"}
+
+var _cur=location.hash;function setHash(h){_cur=h;location.hash=h}
+/* ====== الحالة ====== */
+var S={tok:ssGet("tok"),cname:ssGet("cname"),br:ssGet("cbr")||"karana",tab:"att",day:today(),players:[],att:{},anns:[],sel:null,edit:null,photo:null,pf:null};
+
+function shell(inner,opts){
+  opts=opts||{};
+  return '<div class="hero"><div class="bar">'+(opts.back?'<button class="back" onclick="'+opts.back+'">→ رجوع</button>':'<span></span>')+
+   (opts.out?'<button class="back" onclick="logout()">خروج</button>':'<span></span>')+'</div>'+
+   '<img src="'+LOGO+'" alt="Shoot Academy" onerror="this.style.display=\'none\'">'+
+   '<h1>'+esc(opts.title||"أكاديمية شووت لكرة القدم")+'</h1><p class="ltr">'+esc(opts.sub||"Shoot Football Academy")+'</p></div>'+
+   '<div class="wrap">'+inner+'<div class="foot">تابعونا على <a href="'+INSTA+'" target="_blank" rel="noopener">إنستغرام</a><br>© أكاديمية شووت - البحرين</div></div>';
+}
+function render(h){$("app").innerHTML=h;window.scrollTo(0,0)}
+
+/* ====== الصفحة الرئيسية ====== */
 function home(){
- app.innerHTML='<div class="hero"><img class="lg" src="'+LOGO+'" alt="شعار أكاديمية شووت"><h1>أكاديمية شووت لكرة القدم</h1><div class="en">SHOOT ACADEMY</div><p>نصنع نجوم المستقبل</p><a class="ig" href="https://www.instagram.com/shoot_academy_" target="_blank" rel="noopener">تابعنا على إنستقرام</a></div><div class="gates" style="margin-top:20px"><div class="mut" style="text-align:center">اختر البوابة للمتابعة</div>'+
- '<button class="gate" onclick="parent()"><div class="ic">👨‍👩‍👦</div><b>بوابة أولياء الأمور</b><span class="mut">تابع تقارير وحضور ابنك دون تسجيل دخول</span></button>'+
- '<button class="gate" onclick="coachLogin()"><div class="ic">📋</div><b>بوابة المدربين</b><span class="mut">تسجيل الدخول لتحضير اللاعبين وكتابة التقارير</span></button></div>';
+  setHash("");
+  render(shell('<button class="gate" onclick="parents()"><b>👨‍👩‍👦 بوابة أولياء الأمور</b><span>تابع تقارير ابنك وحضوره بدون تسجيل دخول</span></button>'+
+   '<button class="gate alt" onclick="coachLogin()"><b>🧢 بوابة المدربين</b><span>تسجيل الدخول لإدارة اللاعبين والحضور والتقارير</span></button>'));
 }
-function parent(q){
- q=q||"";
- var list=players.filter(function(p){return p.name.indexOf(q)>-1});
- app.innerHTML='<div class="top"><h2>⚽ أولياء الأمور</h2><button class="btn ghost" onclick="home()">الرئيسية</button></div>'+
- '<input id="q" placeholder="ابحث باسم اللاعب" value="'+esc(q)+'" oninput="parent(this.value)">'+
- list.map(function(p){return '<div class="card pl" onclick="profile('+p.id+')"><span><span class="av">'+esc(p.name[0])+'</span>'+esc(p.name)+'</span><span class="mut">'+esc(p.cat)+' ›</span></div>'}).join("")||'<div class="mut">لا توجد نتائج</div>';
- var i=document.getElementById("q");i.focus();i.setSelectionRange(q.length,q.length);
+
+/* ====== أولياء الأمور ====== */
+function parents(){
+  setHash("#/parents");
+  var h='<h2 style="margin-top:18px">اختر فرع ابنك</h2><div class="muted">Select your child\'s branch</div>';
+  BR.forEach(function(b){h+='<div class="pl" onclick="branch(\''+b.id+'\')"><div class="ic av">'+b.ic+'</div><div class="br"><div><div class="n">'+b.ar+'</div><small>'+b.en+'</small></div></div></div>'});
+  render(shell(h,{back:"home()",title:"بوابة أولياء الأمور",sub:"Parents Portal"}));
 }
-function profile(id){
- var p=players.filter(function(x){return x.id===id})[0],a=data.att[id]||{},ds=Object.keys(a).sort().reverse();
- var pr=ds.filter(function(d){return a[d]}).length,ab=ds.length-pr,pc=ds.length?Math.round(pr/ds.length*100):0;
- var reps=data.reports.filter(function(r){return r.pid===id}).sort(function(x,y){return y.date<x.date?-1:1});
- app.innerHTML='<div class="top"><h2>'+esc(p.name)+'</h2><button class="btn ghost" onclick="parent()">رجوع</button></div>'+
- '<div class="card"><div class="mut">'+esc(p.cat)+' · '+p.age+' سنوات</div></div>'+
- '<div class="card"><h2>الحضور والغياب</h2><div class="stats"><div class="stat"><b>'+ds.length+'</b>الحصص</div><div class="stat"><b class="p">'+pr+'</b>حضور</div><div class="stat"><b class="a">'+ab+'</b>غياب</div></div>'+
- '<div class="bar"><i style="width:'+pc+'%"></i></div><div class="mut">نسبة الالتزام '+pc+'%</div>'+
- ds.map(function(d){return '<div class="row"><span>'+d+'</span><span class="'+(a[d]?'p">حاضر':'a">غائب')+'</span></div>'}).join("")+'</div>'+
- '<div class="card"><h2>تقارير المدرب</h2>'+(reps.map(function(r){return '<div class="row" style="display:block"><b>'+esc(r.coach)+'</b> · <span class="mut">'+r.date+'</span> · '+"⭐".repeat(r.rating)+'<div>'+esc(r.text)+'</div></div>'}).join("")||'<div class="mut">لا توجد تقارير بعد</div>')+'</div>';
+var _srch;
+function branch(id){
+  setHash("#/b/"+id);var b=brn(id);
+  render(shell('<div class="card"><h2>ابحث عن اسم ابنك</h2><div class="muted ltr">Search for your child\'s name</div>'+
+   '<input id="q" placeholder="اكتب 3 أحرف على الأقل من الاسم" autocomplete="off" oninput="doSearch(\''+id+'\')"><div id="res"></div></div>',
+   {back:"parents()",title:b.ar,sub:b.en}));
+  var q=$("q");if(q)q.focus();
 }
-function coachLogin(err){
- app.innerHTML='<div class="top"><h2>دخول المدربين</h2><button class="btn ghost" onclick="home()">الرئيسية</button></div>'+
- '<div class="card"><label>اسم المستخدم</label><input id="u" autocomplete="username"><label>كلمة المرور</label><input id="pw" type="password" autocomplete="current-password">'+
- '<button class="btn" style="width:100%" onclick="login()">دخول</button><div class="mut" style="margin-top:8px">'+(err?'<span class="a">بيانات غير صحيحة</span> · ':'')+'تجريبي: coach / 1234</div></div>';
+function doSearch(id){
+  clearTimeout(_srch);var v=$("q").value;
+  if(v.trim().length<3){$("res").innerHTML='<p class="muted">اكتب 3 أحرف على الأقل…</p>';return}
+  _srch=setTimeout(function(){
+    rpc("search_players",{p_branch:id,p_q:v}).then(function(r){
+      if($("q").value!==v)return;
+      if(!r.length){$("res").innerHTML='<p class="muted">لا توجد نتائج. تأكد من كتابة الاسم، أو تواصل مع المدرب.</p>';return}
+      $("res").innerHTML=r.map(function(p){return plRow(p,"profile('"+p.id+"')")}).join("")
+    }).catch(function(e){$("res").innerHTML='<p class="err">'+errMsg(e)+'</p>'})
+  },300);
 }
-function login(){
- if(document.getElementById("u").value==="coach"&&document.getElementById("pw").value==="1234")dash("att");else coachLogin(1);
+function avatar(p,big){
+  if(p.photo)return'<img class="av'+(big?" big":"")+'" src="'+esc(p.photo)+'" alt="">';
+  return'<div class="av'+(big?" big":"")+'">'+esc((p.name||"?").charAt(0))+'</div>'}
+function plRow(p,click){return'<div class="pl" onclick="'+click+'">'+avatar(p)+'<div><div class="n">'+esc(p.name)+'</div><div class="c">'+esc(p.category||"")+'</div></div></div>'}
+
+function profile(id,fromCoach){
+  if(!fromCoach)setHash("#/p/"+id);
+  render(shell('<p class="muted" style="text-align:center;margin-top:30px">جاري التحميل…</p>',{back:fromCoach?"coachHome()":"history.back()"}));
+  rpc("player_profile",{p_id:id}).then(function(d){
+    var p=d.player,tot=d.present+d.absent,rate=tot?Math.round(d.present*100/tot):0,b=brn(p.branch);
+    var h='<div class="stats"><div class="st ok"><b>'+d.present+'</b><span>أيام الحضور</span></div><div class="st no"><b>'+d.absent+'</b><span>أيام الغياب</span></div><div class="st"><b>'+rate+'%</b><span>نسبة الالتزام</span></div></div>';
+    h+='<div class="card"><h2>سجل الحضور</h2>'+(d.days.length?'<div class="dots">'+d.days.map(function(x){return'<div class="dot '+(x.present?"p":"a")+'" title="'+x.day+'">'+(x.present?"✓":"✗")+'</div>'}).join("")+'</div><p class="muted">آخر '+d.days.length+' يوم تدريب • آخر يوم: '+fmt(d.days[0].day)+'</p>':'<p class="muted">لم يسجل الحضور بعد.</p>')+'<div class="bar"><i style="width:'+rate+'%"></i></div></div>';
+    if(d.news&&d.news.length)h+='<div class="card"><h2>📢 إعلانات الأكاديمية</h2>'+d.news.map(function(n){return'<div class="news"><b>'+esc(n.title)+'</b><div>'+esc(n.body||"")+'</div><div class="muted">'+fmt(n.day)+'</div></div>'}).join("")+'</div>';
+    h+='<div class="card"><h2>تقارير المدربين</h2>';
+    if(!d.reports.length)h+='<p class="muted">لا توجد تقارير بعد.</p>';
+    d.reports.forEach(function(r){
+      h+='<div class="rep"><div class="row sp"><b>'+fmt(r.day)+'</b><span class="stars">'+"★".repeat(r.rating||0)+"☆".repeat(5-(r.rating||0))+'</span></div>'+
+       '<div class="muted">المدرب: '+esc(r.coach||"")+'</div>'+(r.level?'<p><span class="tag '+(r.level==="يحتاج دعم"?"red":"grn")+'">'+esc(r.level)+'</span></p>':'')+
+       (r.strengths?'<div class="str">💪 <b>نقاط القوة:</b> '+esc(r.strengths)+'</div>':'')+
+       (r.needs?'<div class="need">🎯 <b>ما يحتاجه:</b> '+esc(r.needs)+'</div>':'')+
+       (r.notes?'<p>'+esc(r.notes)+'</p>':'')+'</div>'});
+    h+='</div>';
+    h+='<div class="row" style="margin-top:14px"><button class="btn ghost" onclick="shareLink(\''+id+'\')">🔗 مشاركة رابط الملف</button></div>';
+    render(shell(h,{back:fromCoach?"coachHome()":"history.back()",title:p.name,sub:b.ar+(p.category?" • "+p.category:"")}));
+    var hero=document.querySelector(".hero img");if(hero&&p.photo){hero.src=p.photo}
+  }).catch(function(e){render(shell('<div class="card"><p class="err">'+errMsg(e)+'</p></div>',{back:"home()"}))});
 }
-function dash(tab,msg){
- var t='<div class="top"><h2>⚽ لوحة المدرب</h2><button class="btn ghost" onclick="home()">خروج</button></div><div class="tabs">'+
- [["att","التحضير"],["rep","كتابة تقرير"]].map(function(x){return '<button class="btn'+(x[0]===tab?'':' ghost')+'" onclick="dash(\''+x[0]+'\')">'+x[1]+'</button>'}).join("")+'</div>';
- if(tab==="att"){
-  var today=iso(new Date());
-  t+='<div class="card"><label>تاريخ الحصة</label><input type="date" id="dt" value="'+today+'" onchange="dashDate()">'+
-  '<div id="list"></div><button class="btn" style="width:100%;margin-top:10px" onclick="saveAtt()">حفظ التحضير</button><div class="toast">'+(msg||"")+'</div></div>';
-  app.innerHTML=t;dashDate();
- }else{
-  t+='<div class="card"><label>اللاعب</label><select id="rp">'+players.map(function(p){return '<option value="'+p.id+'">'+esc(p.name)+'</option>'}).join("")+'</select>'+
-  '<label>التقييم</label><select id="rt"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3">⭐⭐⭐</option><option value="2">⭐⭐</option><option value="1">⭐</option></select>'+
-  '<label>التقرير</label><textarea id="rx" rows="4"></textarea><button class="btn" style="width:100%" onclick="saveRep()">إرسال التقرير</button><div class="toast">'+(msg||"")+'</div></div>';
-  app.innerHTML=t;
- }
+function shareLink(id){
+  var u=location.origin+location.pathname+"#/p/"+id;
+  if(navigator.share){navigator.share({title:"ملف اللاعب - أكاديمية شووت",url:u}).catch(function(){})}
+  else if(navigator.clipboard){navigator.clipboard.writeText(u).then(function(){toast("تم نسخ الرابط")},function(){prompt("انسخ الرابط",u)})}
+  else prompt("انسخ الرابط",u);
 }
-function dashDate(){
- var d=document.getElementById("dt").value;
- document.getElementById("list").innerHTML=players.map(function(p){var v=data.att[p.id]&&data.att[p.id][d];
-  return '<label class="chk"><input type="checkbox" data-id="'+p.id+'"'+(v?' checked':'')+'><span>'+esc(p.name)+'</span></label>'}).join("");
+
+/* ====== المدربون ====== */
+function coachLogin(msg){
+  setHash("#/coach");
+  if(S.tok){coachHome();return}
+  render(shell('<div class="card"><h2>تسجيل دخول المدرب</h2><label>اسم المستخدم</label><input id="u" autocapitalize="none" autocorrect="off" autocomplete="username" placeholder="coach1">'+
+   '<label>الرقم السري</label><input id="pw" type="password" autocomplete="current-password" onkeydown="if(event.key===\'Enter\')doLogin()">'+
+   '<div id="le" class="err">'+esc(msg||"")+'</div><button class="btn red block" id="lb" onclick="doLogin()">دخول</button></div>',{back:"home()",title:"بوابة المدربين",sub:"Coaches Portal"}));
 }
-function saveAtt(){
- var d=document.getElementById("dt").value;if(!d)return;
- document.querySelectorAll("#list input").forEach(function(c){var id=c.dataset.id;data.att[id]=data.att[id]||{};data.att[id][d]=c.checked});
- save();document.querySelector(".toast").textContent="تم حفظ التحضير ✓";
+function doLogin(){
+  var u=$("u").value,p=$("pw").value;if(!u||!p){$("le").textContent="أدخل البيانات";return}
+  $("lb").disabled=true;$("le").textContent="";
+  rpc("coach_login",{p_user:u,p_pass:p}).then(function(r){
+    S.tok=r.token;S.cname=r.name;ssSet("tok",r.token);ssSet("cname",r.name);coachHome()
+  }).catch(function(e){$("lb").disabled=false;$("le").textContent=errMsg(e)});
+}
+function logout(){if(S.tok)rpc("coach_logout",{p_tok:S.tok}).catch(function(){});S.tok=null;ssSet("tok",null);home()}
+function authFail(e){if((e.message||"").indexOf("AUTH")>-1){S.tok=null;ssSet("tok",null);coachLogin("انتهت الجلسة، سجّل الدخول مرة أخرى");return true}toast(errMsg(e));return false}
+
+function coachHome(tab){
+  if(tab)S.tab=tab;
+  var h='<div class="tabs">'+BR.map(function(b){return'<button class="tab '+(b.id===S.br?"on":"")+'" onclick="setBr(\''+b.id+'\')">'+b.ar+'</button>'}).join("")+'</div>';
+  h+='<div class="tabs" style="padding-top:0">'+[["att","✅ الحضور"],["rep","📝 التقارير"],["pls","👥 اللاعبون"],["ann","📢 إعلانات"]].map(function(t){return'<button class="tab '+(t[0]===S.tab?"on":"")+'" onclick="coachHome(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div><div id="cb"><p class="muted" style="text-align:center">جاري التحميل…</p></div>';
+  render(shell(h,{out:true,title:"أهلاً "+(S.cname||"مدرب"),sub:brn(S.br).en}));
+  rpc("coach_players",{p_tok:S.tok,p_branch:S.br}).then(function(pl){S.players=pl;
+    if(S.tab==="att")return rpc("coach_att_get",{p_tok:S.tok,p_branch:S.br,p_day:S.day}).then(function(a){S.att={};a.forEach(function(x){S.att[x.id]=x.present});viewAtt()});
+    if(S.tab==="rep")return viewRep();
+    if(S.tab==="pls")return viewPls();
+    return rpc("coach_anns",{p_tok:S.tok}).then(function(a){S.anns=a;viewAnn()});
+  }).catch(authFail);
+}
+function setBr(id){S.br=id;ssSet("cbr",id);coachHome()}
+
+/* --- الحضور --- */
+function viewAtt(){
+  var pres=0,abs=0;S.players.forEach(function(p){if(S.att[p.id]===true)pres++;else if(S.att[p.id]===false)abs++});
+  var h='<div class="card"><label style="margin-top:0">تاريخ التدريب</label><input type="date" value="'+S.day+'" max="'+today()+'" onchange="S.day=this.value||today();coachHome(\'att\')">'+
+   '<div class="row sp" style="margin-top:12px"><span class="tag grn">حاضر '+pres+'</span><span class="tag red">غائب '+abs+'</span><span class="tag">بدون تسجيل '+(S.players.length-pres-abs)+'</span></div>'+
+   (S.players.length?'<button class="btn ghost sm" style="margin-top:12px" onclick="allPresent()">الكل حاضر</button>':'')+'</div>';
+  if(!S.players.length)h+='<div class="card"><p class="muted">لا يوجد لاعبون في هذا الفرع. أضفهم من تبويب «اللاعبون».</p></div>';
+  S.players.forEach(function(p){var v=S.att[p.id];
+    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+esc(p.category||"")+'</div></div>'+
+     '<div class="att"><button class="p '+(v===true?"on":"")+'" onclick="mark(\''+p.id+'\',true)">حاضر</button><button class="a '+(v===false?"on":"")+'" onclick="mark(\''+p.id+'\',false)">غائب</button></div></div>'});
+  $("cb").innerHTML=h;
+}
+function mark(id,v){
+  var old=S.att[id];S.att[id]=v;viewAtt();
+  rpc("coach_att_set",{p_tok:S.tok,p_day:S.day,p_items:[{id:id,present:v}]}).then(function(){toast("تم الحفظ")}).catch(function(e){S.att[id]=old;viewAtt();authFail(e)});
+}
+function allPresent(){
+  if(!confirm("تسجيل كل اللاعبين حاضرين؟"))return;
+  var items=S.players.map(function(p){return{id:p.id,present:true}});
+  rpc("coach_att_set",{p_tok:S.tok,p_day:S.day,p_items:items}).then(function(){S.players.forEach(function(p){S.att[p.id]=true});viewAtt();toast("تم الحفظ")}).catch(authFail);
+}
+
+/* --- التقارير --- */
+function viewRep(){
+  if(!S.players.length){$("cb").innerHTML='<div class="card"><p class="muted">أضف لاعبين أولاً.</p></div>';return}
+  if(!S.sel||!S.players.some(function(p){return p.id===S.sel}))S.sel=S.players[0].id;
+  var h='<div class="card"><h2>كتابة تقرير جديد</h2><label style="margin-top:0">اللاعب</label><select id="rp" onchange="S.sel=this.value;viewRep()">'+
+   S.players.map(function(p){return'<option value="'+p.id+'"'+(p.id===S.sel?" selected":"")+'>'+esc(p.name)+'</option>'}).join("")+'</select>'+
+   '<label>التقييم العام</label><select id="rr"><option value="5">★★★★★ ممتاز</option><option value="4">★★★★ جيد جداً</option><option value="3" selected>★★★ جيد</option><option value="2">★★ مقبول</option><option value="1">★ ضعيف</option></select>'+
+   '<label>حالة التطور</label><select id="rl">'+LEVELS.map(function(l){return'<option>'+l+'</option>'}).join("")+'</select>'+
+   '<label>نقاط القوة</label><textarea id="rs" placeholder="مثال: سرعة جيدة وتمرير ممتاز"></textarea>'+
+   '<label>ما يحتاجه اللاعب</label><textarea id="rn" placeholder="مثال: يحتاج تحسين الضربة بالقدم اليسرى"></textarea>'+
+   '<label>ملاحظات للأهل</label><textarea id="ro"></textarea><button class="btn red block" id="rb" onclick="saveRep()">حفظ التقرير</button></div>'+
+   '<div class="card"><h2>تقارير سابقة لهذا اللاعب</h2><div id="rl2"><p class="muted">جاري التحميل…</p></div></div>';
+  $("cb").innerHTML=h;
+  rpc("player_profile",{p_id:S.sel}).then(function(d){
+    $("rl2").innerHTML=d.reports.length?d.reports.map(function(r){return'<div class="rep"><div class="row sp"><b>'+fmt(r.day)+' • '+esc(r.level||"")+'</b><button class="btn ghost sm fit" onclick="delRep(\''+r.id+'\')">حذف</button></div><div class="muted">'+esc(r.coach||"")+'</div>'+
+      (r.strengths?'<p>💪 '+esc(r.strengths)+'</p>':'')+(r.needs?'<p>🎯 '+esc(r.needs)+'</p>':'')+(r.notes?'<p>'+esc(r.notes)+'</p>':'')+'</div>'}).join(""):'<p class="muted">لا توجد تقارير.</p>';
+  }).catch(function(){});
 }
 function saveRep(){
- var x=document.getElementById("rx").value.trim();if(!x)return;
- data.reports.push({pid:+document.getElementById("rp").value,date:iso(new Date()),coach:"المدرب",rating:+document.getElementById("rt").value,text:x});
- save();dash("rep","تم إرسال التقرير، وسيظهر لولي الأمر ✓");
+  var s=$("rs").value,n=$("rn").value,o=$("ro").value;
+  if(!(s+n+o).trim()){toast("اكتب ملاحظة واحدة على الأقل");return}
+  $("rb").disabled=true;
+  rpc("coach_add_report",{p_tok:S.tok,p_player:S.sel,p_rating:parseInt($("rr").value,10),p_level:$("rl").value,p_strengths:s,p_needs:n,p_notes:o})
+   .then(function(){toast("تم حفظ التقرير");viewRep()}).catch(function(e){$("rb").disabled=false;authFail(e)});
 }
-home();
+function delRep(id){if(!confirm("حذف هذا التقرير؟"))return;rpc("coach_del_report",{p_tok:S.tok,p_id:id}).then(function(){toast("تم الحذف");viewRep()}).catch(authFail)}
+
+/* --- اللاعبون --- */
+function viewPls(){
+  var h='<div class="card"><div class="row sp"><h2 style="margin:0">لاعبو '+brn(S.br).ar+' ('+S.players.length+')</h2><button class="btn red sm fit" onclick="editPl(null)">+ إضافة</button></div></div>';
+  S.players.forEach(function(p){
+    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+esc(p.category||"")+'</div></div>'+
+     '<button class="btn ghost sm fit" onclick="profile(\''+p.id+'\',true)">الملف</button><button class="btn ghost sm fit" onclick="editPl(\''+p.id+'\')">تعديل</button></div>'});
+  $("cb").innerHTML=h;
+}
+function editPl(id){
+  var p=null;S.players.forEach(function(x){if(x.id===id)p=x});S.edit=id;S.photo=p?p.photo||"":"";
+  var h='<div class="card"><h2>'+(p?"تعديل لاعب":"إضافة لاعب جديد")+'</h2><label style="margin-top:0">اسم اللاعب</label><input id="pn" value="'+esc(p?p.name:"")+'" placeholder="الاسم الثلاثي">'+
+   '<label>الفئة العمرية</label><input id="pc" value="'+esc(p?p.category||"":"")+'" placeholder="مثال: تحت 10 سنوات">'+
+   '<label>الصورة (اختياري)</label><div class="row" style="margin-top:6px"><div id="pv" class="fit">'+(S.photo?'<img class="av" src="'+esc(S.photo)+'">':'<div class="av">?</div>')+'</div><input type="file" accept="image/*" onchange="pickPhoto(this)" style="margin:0"></div>'+
+   '<div class="row" style="margin-top:14px"><button class="btn red" id="sb" onclick="savePl()">حفظ</button><button class="btn ghost" onclick="coachHome(\'pls\')">إلغاء</button></div>'+
+   (p?'<button class="btn ghost block" style="color:var(--no)" onclick="rmPl()">إزالة اللاعب من الفرع</button>':'')+'</div>';
+  $("cb").innerHTML=h;
+}
+function pickPhoto(inp){
+  var f=inp.files&&inp.files[0];if(!f)return;
+  var img=new Image(),fr=new FileReader();
+  fr.onload=function(){img.onload=function(){
+    var m=240,w=img.width,h=img.height,k=Math.min(1,m/Math.max(w,h));
+    var c=document.createElement("canvas");c.width=Math.round(w*k);c.height=Math.round(h*k);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    S.photo=c.toDataURL("image/jpeg",0.7);
+    $("pv").innerHTML='<img class="av" src="'+S.photo+'">';
+  };img.src=fr.result};
+  fr.readAsDataURL(f);
+}
+function savePl(){
+  var n=$("pn").value.trim();if(n.length<2){toast("اكتب اسم اللاعب");return}
+  $("sb").disabled=true;
+  var c=$("pc").value.trim(),p=S.edit?rpc("coach_update_player",{p_tok:S.tok,p_id:S.edit,p_name:n,p_cat:c,p_photo:S.photo||""}):rpc("coach_add_player",{p_tok:S.tok,p_branch:S.br,p_name:n,p_cat:c,p_photo:S.photo||""});
+  p.then(function(){toast("تم الحفظ");coachHome("pls")}).catch(function(e){$("sb").disabled=false;authFail(e)});
+}
+function rmPl(){if(!confirm("إزالة هذا اللاعب من الفرع؟ لن يظهر لأولياء الأمور."))return;rpc("coach_remove_player",{p_tok:S.tok,p_id:S.edit}).then(function(){toast("تمت الإزالة");coachHome("pls")}).catch(authFail)}
+
+/* --- الإعلانات --- */
+function viewAnn(){
+  var h='<div class="card"><h2>إعلان جديد</h2><label style="margin-top:0">يظهر في</label><select id="ab"><option value="">كل الفروع</option>'+BR.map(function(b){return'<option value="'+b.id+'"'+(b.id===S.br?" selected":"")+'>'+b.ar+'</option>'}).join("")+'</select>'+
+   '<label>العنوان</label><input id="at" placeholder="مثال: تأجيل تدريب الخميس"><label>التفاصيل</label><textarea id="ax"></textarea><button class="btn red block" onclick="addAnn()">نشر</button></div><div class="card"><h2>الإعلانات الحالية</h2>';
+  h+=S.anns.length?S.anns.map(function(a){return'<div class="news"><div class="row sp"><b>'+esc(a.title)+'</b><button class="btn ghost sm fit" onclick="delAnn(\''+a.id+'\')">حذف</button></div><div>'+esc(a.body||"")+'</div><div class="muted">'+(a.branch?brn(a.branch).ar:"كل الفروع")+' • '+fmt(a.day)+'</div></div>'}).join(""):'<p class="muted">لا توجد إعلانات.</p>';
+  $("cb").innerHTML=h+'</div>';
+}
+function addAnn(){var t=$("at").value;if(t.trim().length<2){toast("اكتب العنوان");return}
+  rpc("coach_add_ann",{p_tok:S.tok,p_branch:$("ab").value,p_title:t,p_body:$("ax").value}).then(function(){toast("تم النشر");coachHome("ann")}).catch(authFail)}
+function delAnn(id){if(!confirm("حذف الإعلان؟"))return;rpc("coach_del_ann",{p_tok:S.tok,p_id:id}).then(function(){coachHome("ann")}).catch(authFail)}
+
+/* ====== التوجيه من الرابط ====== */
+function route(){
+  var h=location.hash,m;
+  if((m=h.match(/^#\/p\/([0-9a-f-]{36})$/i)))return profile(m[1]);
+  if((m=h.match(/^#\/b\/(\w+)$/)))return branch(m[1]);
+  if(h==="#/parents")return parents();
+  if(h==="#/coach")return coachLogin();
+  home();
+}
+window.addEventListener("hashchange",function(){if(location.hash!==_cur){_cur=location.hash;route()}});
+route();
 </script>
 </body>
 </html>
-
