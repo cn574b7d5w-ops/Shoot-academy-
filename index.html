@@ -68,6 +68,7 @@ var SUPA_URL="https://mfuzalxrstwcibqdzzlc.supabase.co";
 var SUPA_KEY="sb_publishable_edI2u2ntUE6wBNaNl3X94A_9VHDRP2M";
 var LOGO="IMG_5357.jpeg", INSTA="https://www.instagram.com/shoot_academy_";
 var BR=[
+ {id:"karana_main",ar:"فرع كرانة الرئيسي",en:"Karanah Main Branch",ic:"ر"},
  {id:"karana",ar:"فرع كرانة",en:"Karanah Branch",ic:"ك"},
  {id:"hamad",ar:"فرع مدينة حمد",en:"Madinat Hamad Branch",ic:"ح"},
  {id:"isa",ar:"فرع مدينة عيسى الاستقلال",en:"Madinat Isa – Al-Istiqlal Branch",ic:"ع"},
@@ -97,6 +98,7 @@ function errMsg(e){var m=e&&e.message||"";
   if(m==="SETUP")return"الموقع لم يربط بقاعدة البيانات بعد.";
   if(m.indexOf("BAD_LOGIN")>-1)return"اسم المستخدم أو الرقم السري غير صحيح";
   if(m.indexOf("AUTH")>-1)return"انتهت الجلسة، سجّل الدخول مرة أخرى";
+  if(m.indexOf("FORBIDDEN")>-1)return"ليس لديك صلاحية على هذا الفرع";
   if(m.indexOf("PHOTO_TOO_BIG")>-1)return"الصورة كبيرة";
   if(m.indexOf("BAD_NAME")>-1)return"الاسم قصير";
   if(m.indexOf("Failed to fetch")>-1||m.indexOf("NetworkError")>-1)return"تعذر الاتصال بالإنترنت";
@@ -104,7 +106,7 @@ function errMsg(e){var m=e&&e.message||"";
 
 var _cur=location.hash;function setHash(h){_cur=h;location.hash=h}
 /* ====== الحالة ====== */
-var S={tok:ssGet("tok"),cname:ssGet("cname"),br:ssGet("cbr")||"karana",tab:"att",day:today(),players:[],att:{},anns:[],sel:null,edit:null,photo:null,pf:null};
+var S={tok:ssGet("tok"),cname:ssGet("cname"),role:ssGet("role"),brs:(function(){try{return JSON.parse(ssGet("brs")||"null")}catch(e){return null}})(),br:ssGet("cbr")||"karana",tab:"att",day:today(),players:[],att:{},anns:[],sel:null,edit:null,photo:null,pf:null};
 
 function shell(inner,opts){
   opts=opts||{};
@@ -134,17 +136,17 @@ var _srch;
 function branch(id){
   setHash("#/b/"+id);var b=brn(id);
   render(shell('<div class="card"><h2>ابحث عن اسم ابنك</h2><div class="muted ltr">Search for your child\'s name</div>'+
-   '<input id="q" placeholder="اكتب 3 أحرف على الأقل من الاسم" autocomplete="off" oninput="doSearch(\''+id+'\')"><div id="res"></div></div>',
+   '<input id="q" placeholder="اكتب الاسم الأول والثاني والثالث" autocomplete="off" oninput="doSearch(\''+id+'\')"><div id="res"></div></div>',
    {back:"parents()",title:b.ar,sub:b.en}));
   var q=$("q");if(q)q.focus();
 }
 function doSearch(id){
   clearTimeout(_srch);var v=$("q").value;
-  if(v.trim().length<3){$("res").innerHTML='<p class="muted">اكتب 3 أحرف على الأقل…</p>';return}
+  if(v.trim().split(/\s+/).length<3){$("res").innerHTML='<p class="muted">اكتب الاسم الأول والثاني والثالث لابنك (مثال: أحمد محمد علي) ليظهر ملفه.</p>';return}
   _srch=setTimeout(function(){
     rpc("search_players",{p_branch:id,p_q:v}).then(function(r){
       if($("q").value!==v)return;
-      if(!r.length){$("res").innerHTML='<p class="muted">لا توجد نتائج. تأكد من كتابة الاسم، أو تواصل مع المدرب.</p>';return}
+      if(!r.length){$("res").innerHTML='<p class="muted">لا توجد نتائج. تأكد من كتابة الأسماء الثلاثة بشكل صحيح، أو تواصل مع المدرب.</p>';return}
       $("res").innerHTML=r.map(function(p){return plRow(p,"profile('"+p.id+"')")}).join("")
     }).catch(function(e){$("res").innerHTML='<p class="err">'+errMsg(e)+'</p>'})
   },300);
@@ -195,17 +197,21 @@ function doLogin(){
   var u=$("u").value,p=$("pw").value;if(!u||!p){$("le").textContent="أدخل البيانات";return}
   $("lb").disabled=true;$("le").textContent="";
   rpc("coach_login",{p_user:u,p_pass:p}).then(function(r){
-    S.tok=r.token;S.cname=r.name;ssSet("tok",r.token);ssSet("cname",r.name);coachHome()
+    S.tok=r.token;S.cname=r.name;S.role=r.role;S.brs=r.branches;ssSet("brs",JSON.stringify(r.branches));ssSet("tok",r.token);ssSet("cname",r.name);ssSet("role",r.role);S.tab=r.role==="admin"?"stats":"att";coachHome()
   }).catch(function(e){$("lb").disabled=false;$("le").textContent=errMsg(e)});
 }
-function logout(){if(S.tok)rpc("coach_logout",{p_tok:S.tok}).catch(function(){});S.tok=null;ssSet("tok",null);home()}
-function authFail(e){if((e.message||"").indexOf("AUTH")>-1){S.tok=null;ssSet("tok",null);coachLogin("انتهت الجلسة، سجّل الدخول مرة أخرى");return true}toast(errMsg(e));return false}
+function logout(){if(S.tok)rpc("coach_logout",{p_tok:S.tok}).catch(function(){});S.tok=null;S.role=null;S.brs=null;ssSet("tok",null);ssSet("role",null);ssSet("brs",null);home()}
+function authFail(e){if((e.message||"").indexOf("AUTH")>-1){S.tok=null;ssSet("tok",null);ssSet("role",null);coachLogin("انتهت الجلسة، سجّل الدخول مرة أخرى");return true}toast(errMsg(e));return false}
 
+function allowed(){var a=S.brs||[];return BR.filter(function(b){return a.indexOf(b.id)>-1})}
 function coachHome(tab){
   if(tab)S.tab=tab;
-  var h='<div class="tabs">'+BR.map(function(b){return'<button class="tab '+(b.id===S.br?"on":"")+'" onclick="setBr(\''+b.id+'\')">'+b.ar+'</button>'}).join("")+'</div>';
-  h+='<div class="tabs" style="padding-top:0">'+[["att","✅ الحضور"],["rep","📝 التقارير"],["pls","👥 اللاعبون"],["ann","📢 إعلانات"]].map(function(t){return'<button class="tab '+(t[0]===S.tab?"on":"")+'" onclick="coachHome(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div><div id="cb"><p class="muted" style="text-align:center">جاري التحميل…</p></div>';
+  var al=allowed();if(!al.length){S.tok=null;coachLogin("لا توجد فروع لهذا الحساب");return}
+  if(!al.some(function(b){return b.id===S.br}))S.br=al[0].id;
+  var h='<div class="tabs">'+al.map(function(b){return'<button class="tab '+(b.id===S.br?"on":"")+'" onclick="setBr(\''+b.id+'\')">'+b.ar+'</button>'}).join("")+'</div>';
+  h+='<div class="tabs" style="padding-top:0">'+(S.role==="admin"?[["stats","📊 الإحصائيات"]]:[]).concat([["att","✅ الحضور"],["rep","📝 التقارير"],["pls","👥 اللاعبون"],["ann","📢 إعلانات"]]).map(function(t){return'<button class="tab '+(t[0]===S.tab?"on":"")+'" onclick="coachHome(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div><div id="cb"><p class="muted" style="text-align:center">جاري التحميل…</p></div>';
   render(shell(h,{out:true,title:"أهلاً "+(S.cname||"مدرب"),sub:brn(S.br).en}));
+  if(S.tab==="stats"&&S.role==="admin"){rpc("admin_stats",{p_tok:S.tok,p_day:today()}).then(viewStats).catch(authFail);return}
   rpc("coach_players",{p_tok:S.tok,p_branch:S.br}).then(function(pl){S.players=pl;
     if(S.tab==="att")return rpc("coach_att_get",{p_tok:S.tok,p_branch:S.br,p_day:S.day}).then(function(a){S.att={};a.forEach(function(x){S.att[x.id]=x.present});viewAtt()});
     if(S.tab==="rep")return viewRep();
@@ -214,6 +220,15 @@ function coachHome(tab){
   }).catch(authFail);
 }
 function setBr(id){S.br=id;ssSet("cbr",id);coachHome()}
+
+/* --- الإحصائيات (للمدير فقط) --- */
+function viewStats(a){
+  var tp=0,pr=0,ab=0;a.forEach(function(x){tp+=x.players;pr+=x.present;ab+=x.absent});
+  var h='<div class="stats"><div class="st"><b>'+tp+'</b><span>إجمالي اللاعبين</span></div><div class="st ok"><b>'+pr+'</b><span>حاضر اليوم</span></div><div class="st no"><b>'+ab+'</b><span>غائب اليوم</span></div></div>';
+  a.forEach(function(x){var b=brn(x.branch);
+    h+='<div class="card"><h2>'+b.ar+'</h2><div class="muted ltr">'+b.en+'</div><div class="row sp" style="margin-top:10px"><span class="tag">لاعبون '+x.players+'</span><span class="tag grn">حاضر اليوم '+x.present+'</span><span class="tag red">غائب اليوم '+x.absent+'</span><span class="tag">تقارير (30 يوم) '+x.reports+'</span></div></div>'});
+  $("cb").innerHTML=h;
+}
 
 /* --- الحضور --- */
 function viewAtt(){
@@ -303,7 +318,7 @@ function rmPl(){if(!confirm("إزالة هذا اللاعب من الفرع؟ ل
 
 /* --- الإعلانات --- */
 function viewAnn(){
-  var h='<div class="card"><h2>إعلان جديد</h2><label style="margin-top:0">يظهر في</label><select id="ab"><option value="">كل الفروع</option>'+BR.map(function(b){return'<option value="'+b.id+'"'+(b.id===S.br?" selected":"")+'>'+b.ar+'</option>'}).join("")+'</select>'+
+  var h='<div class="card"><h2>إعلان جديد</h2><label style="margin-top:0">يظهر في</label><select id="ab">'+(S.role==="admin"?'<option value="">كل الفروع</option>':'')+allowed().map(function(b){return'<option value="'+b.id+'"'+(b.id===S.br?" selected":"")+'>'+b.ar+'</option>'}).join("")+'</select>'+
    '<label>العنوان</label><input id="at" placeholder="مثال: تأجيل تدريب الخميس"><label>التفاصيل</label><textarea id="ax"></textarea><button class="btn red block" onclick="addAnn()">نشر</button></div><div class="card"><h2>الإعلانات الحالية</h2>';
   h+=S.anns.length?S.anns.map(function(a){return'<div class="news"><div class="row sp"><b>'+esc(a.title)+'</b><button class="btn ghost sm fit" onclick="delAnn(\''+a.id+'\')">حذف</button></div><div>'+esc(a.body||"")+'</div><div class="muted">'+(a.branch?brn(a.branch).ar:"كل الفروع")+' • '+fmt(a.day)+'</div></div>'}).join(""):'<p class="muted">لا توجد إعلانات.</p>';
   $("cb").innerHTML=h+'</div>';
