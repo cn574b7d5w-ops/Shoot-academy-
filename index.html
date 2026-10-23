@@ -121,6 +121,7 @@ html[dir=ltr] .gt,html[dir=ltr] .shopc,html[dir=ltr] .gate,html[dir=ltr] .brc sm
 .idp{width:100%;max-height:170px;object-fit:cover;border-radius:12px}
 .thx{text-align:center}.thx p{line-height:1.8}.thx .rw{text-align:start}
 .nx{display:flex;gap:12px;align-items:flex-start;padding:8px 0}.nx i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.lnk{display:inline-block;margin-top:10px;color:var(--acc);font-weight:700;font-size:14px;text-decoration:none}
 .regbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center;box-shadow:0 -6px 20px #0002}
 .regbar .tt{flex:1;display:flex;flex-direction:column;align-items:center;line-height:1.2}.regbar .tt b{font-size:19px;color:var(--acc)}.regbar .btn{flex:none;min-width:110px;padding:13px 20px}
 .pt{width:52px;height:52px;border-radius:10px;overflow:hidden;background:var(--line);display:grid;place-items:center;flex:none;font-size:24px}.pt img{width:100%;height:100%;object-fit:cover}
@@ -208,6 +209,7 @@ function errMsg(e){var m=e&&e.message||"";
   if(m.indexOf("BAD_BRANCH")>-1)return T("الفرع غير صحيح","Invalid branch");
   if(m.indexOf("TOO_MANY")>-1)return T("محاولات كثيرة، حاول بعد قليل","Too many attempts, please try again shortly");
   if(m.indexOf("ALREADY")>-1)return"تمت إضافة هذا اللاعب مسبقاً";
+  if(m.indexOf("DUP_CPR")>-1)return"هذا الرقم الشخصي مسجّل للاعب آخر";
   if(m.indexOf("BAD_DATES")>-1)return"تاريخ نهاية الاشتراك قبل تاريخ البدء";
   if(m.indexOf("GALLERY_FULL")>-1)return"المعرض ممتلئ (18 صورة كحد أقصى)، احذف صورة أولاً";
   if(m.indexOf("BAD_IMAGE")>-1)return T("الصورة غير صالحة أو كبيرة جداً","The image is invalid or too large");
@@ -287,21 +289,39 @@ function parents(){
   BR.forEach(function(b){h+='<div class="brc" data-slot="b_'+b.id+'" onclick="branch(\''+b.id+'\')"><div><b>'+T(b.ar,b.en)+'</b>'+(isEn()?'':'<small>'+b.en+'</small>')+'</div><span class="ar2">'+T("&#8249;","&#8250;")+'</span></div>'});
   render(shell(h,{back:"home()",bg:"parents_bg",title:T("بوابة أولياء الأمور","Parents Portal"),sub:T("Parents Portal","بوابة أولياء الأمور")}));
 }
-var _srch;
-function branch(id){
-  PUB=true;setHash("#/b/"+id);var b=brn(id);
-  render(shell('<div class="card"><h2>'+T("ابحث عن اسم ابنك","Find your child")+'</h2>'+(isEn()?'<div class="muted">Type the first, second and third name exactly as registered (in Arabic).</div>':'<div class="muted ltr">Search for your child\'s name</div>')+
-   '<input id="q" placeholder="'+T("اكتب الاسم الأول والثاني والثالث","First, second and third name")+'" autocomplete="off" oninput="doSearch(\''+id+'\')"><div id="res"></div></div>',
+var _srch,_mode="cpr";
+function branch(id,mode){
+  PUB=true;_mode=mode||"cpr";setHash("#/b/"+id);var b=brn(id);
+  var cpr=_mode==="cpr";
+  render(shell('<div class="card"><h2>'+T("ابحث عن ابنك","Find your child")+'</h2>'+
+   (cpr?'<label style="margin-top:0">'+T("الرقم الشخصي للاعب (9 أرقام)","Player's personal number / CPR (9 digits)")+'</label><input id="q" class="ltr" inputmode="numeric" maxlength="12" placeholder="000000000" autocomplete="off" oninput="doSearch(\''+id+'\')">'+
+     '<div class="muted" style="margin-top:8px">'+T("يظهر ملف ابنك مباشرة عند إدخال الرقم كاملاً.","Your child's profile appears as soon as you enter the full number.")+'</div>'+
+     '<a href="javascript:void 0" class="lnk" onclick="branch(\''+id+'\',\'name\')">'+T("ما عندي الرقم؟ ابحث بالاسم","Don't have the number? Search by name")+'</a>':
+     '<div class="muted">'+T("البحث بالاسم متاح فقط للاعبين الذين لم يُضَف رقمهم الشخصي بعد.","Name search only works for players whose personal number has not been added yet.")+'</div>'+
+     '<input id="q" placeholder="'+T("اكتب الاسم الأول والثاني والثالث","First, second and third name")+'" autocomplete="off" oninput="doSearch(\''+id+'\')">'+
+     '<a href="javascript:void 0" class="lnk" onclick="branch(\''+id+'\',\'cpr\')">'+T("← البحث بالرقم الشخصي","← Search by personal number")+'</a>')+
+   '<div id="res"></div></div>',
    {back:"parents()",bg:"b_"+id,title:T(b.ar,b.en),sub:T(b.en,b.ar)}));
   var q=$("q");if(q)q.focus();
 }
 function doSearch(id){
-  clearTimeout(_srch);var v=$("q").value;
+  clearTimeout(_srch);var v=$("q").value,cpr=_mode==="cpr";
+  if(cpr){
+    var d=v.replace(/\D/g,"");
+    if(d.length<9){$("res").innerHTML='';return}
+    $("res").innerHTML='<p class="muted">'+T("جاري البحث…","Searching…")+'</p>';
+    rpc("search_by_cpr",{p_cpr:d}).then(function(r){
+      if($("q").value.replace(/\D/g,"")!==d)return;
+      if(!r.length){$("res").innerHTML='<p class="muted">'+T("لا توجد نتيجة. تأكد من الرقم الشخصي، أو ابحث بالاسم إن لم يُضَف رقم ابنك بعد، أو تواصل مع المدرب.","No result. Check the personal number, search by name if your child's number has not been added yet, or contact the coach.")+'</p>';return}
+      $("res").innerHTML=r.map(function(p){return plRow(p,"profile('"+p.id+"')")}).join("")
+    }).catch(function(e){$("res").innerHTML='<p class="err">'+errMsg(e)+'</p>'});
+    return;
+  }
   if(v.trim().split(/\s+/).length<3){$("res").innerHTML='<p class="muted">'+T("اكتب الاسم الأول والثاني والثالث لابنك (مثال: أحمد محمد علي) ليظهر ملفه.","Type your child's first, second and third name (in Arabic, e.g. أحمد محمد علي) to open the profile.")+'</p>';return}
   _srch=setTimeout(function(){
     rpc("search_players",{p_branch:id,p_q:v}).then(function(r){
       if($("q").value!==v)return;
-      if(!r.length){$("res").innerHTML='<p class="muted">'+T("لا توجد نتائج. تأكد من كتابة الأسماء الثلاثة بشكل صحيح، أو تواصل مع المدرب.","No results. Make sure all three names are spelled correctly, or contact the coach.")+'</p>';return}
+      if(!r.length){$("res").innerHTML='<p class="muted">'+T("لا توجد نتائج. إذا كان ابنك مسجلاً فجرّب البحث بالرقم الشخصي، أو تواصل مع المدرب.","No results. If your child is registered, try the personal number, or contact the coach.")+'</p>';return}
       $("res").innerHTML=r.map(function(p){return plRow(p,"profile('"+p.id+"')")}).join("")
     }).catch(function(e){$("res").innerHTML='<p class="err">'+errMsg(e)+'</p>'})
   },300);
@@ -467,13 +487,14 @@ function delRep(id){if(!confirm("حذف هذا التقرير؟"))return;rpc("co
 function viewPls(){
   var h=(S.players.length?grpChips("viewPls"):"")+'<div class="card"><div class="row sp"><h2 style="margin:0">لاعبو '+brn(S.br).ar+' ('+S.players.length+')</h2><button class="btn red sm fit" onclick="editPl(null)">+ إضافة</button></div></div>';
   gfilter().forEach(function(p){
-    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+catLine(p)+'</div>'+((p.phone||p.phone2)?'<div class="c">📞 ولي الأمر: '+[p.phone,p.phone2].filter(Boolean).map(function(n){return'<a class="ltr" href="tel:'+esc(n)+'">'+esc(n)+'</a>'}).join(" • ")+'</div>':'')+'<div style="margin-top:4px">'+subTag(p)+(S.role==="admin"&&p.price!=null?' <span class="tag">'+money(p.price)+'</span> '+(p.paid?'<span class="tag grn">مدفوع</span>':'<span class="tag red">غير مدفوع</span>'):'')+'</div></div>'+
+    h+='<div class="pl static">'+avatar(p)+'<div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+catLine(p)+'</div>'+(p.cpr?'<div class="c">🪪 <span class="ltr">'+esc(p.cpr)+'</span></div>':'<div class="c"><span class="tag org">بدون رقم شخصي</span></div>')+((p.phone||p.phone2)?'<div class="c">📞 ولي الأمر: '+[p.phone,p.phone2].filter(Boolean).map(function(n){return'<a class="ltr" href="tel:'+esc(n)+'">'+esc(n)+'</a>'}).join(" • ")+'</div>':'')+'<div style="margin-top:4px">'+subTag(p)+(S.role==="admin"&&p.price!=null?' <span class="tag">'+money(p.price)+'</span> '+(p.paid?'<span class="tag grn">مدفوع</span>':'<span class="tag red">غير مدفوع</span>'):'')+'</div></div>'+
      '<button class="btn ghost sm fit" onclick="profile(\''+p.id+'\',true)">الملف</button><button class="btn ghost sm fit" onclick="editPl(\''+p.id+'\')">تعديل</button></div>'});
   $("cb").innerHTML=h;
 }
 function editPl(id){
   var p=null;S.players.forEach(function(x){if(x.id===id)p=x});S.edit=id;S.photo=p?p.photo||"":"";
   var h='<div class="card"><h2>'+(p?"تعديل لاعب":"إضافة لاعب جديد")+'</h2><label style="margin-top:0">اسم اللاعب</label><input id="pn" value="'+esc(p?p.name:"")+'" placeholder="الاسم الثلاثي">'+
+   '<label>الرقم الشخصي للاعب (9 أرقام) — يستخدمه ولي الأمر للدخول</label><input id="pcpr" inputmode="numeric" maxlength="12" class="ltr" value="'+esc(p&&p.cpr||"")+'" placeholder="000000000">'+
    '<label>رقم هاتف ولي الأمر (يظهر للمدربين فقط)</label><input id="pph" type="tel" inputmode="tel" class="ltr" value="'+esc(p&&p.phone||"")+'" placeholder="3XXXXXXX">'+
    '<label>رقم ولي الأمر الثاني (اختياري)</label><input id="pph2" type="tel" inputmode="tel" class="ltr" value="'+esc(p&&p.phone2||"")+'" placeholder="3XXXXXXX">'+
    '<label>الفئة العمرية</label><input id="pc" value="'+esc(p?p.category||"":"")+'" placeholder="مثال: تحت 10 سنوات">'+
@@ -500,6 +521,7 @@ function pickPhoto(inp){
 }
 function savePl(){
   var n=$("pn").value.trim();if(n.length<2){toast("اكتب اسم اللاعب");return}
+  var cp=$("pcpr").value.replace(/\D/g,"");if(cp&&cp.length!==9){toast("الرقم الشخصي يجب أن يكون 9 أرقام");return}
   var ph=$("pph").value.trim(),ph2=$("pph2").value.trim();
   if((ph&&ph.replace(/\D/g,"").length<8)||(ph2&&ph2.replace(/\D/g,"").length<8)){toast("رقم هاتف ولي الأمر غير صحيح");return}
   var s1=$("ps").value,s2=$("pe").value;if(!s1||!s2){toast("حدد تاريخ بداية ونهاية الاشتراك");return}
@@ -511,7 +533,8 @@ function savePl(){
   var c=$("pc").value.trim(),p=S.edit?rpc("coach_update_player",Object.assign({p_tok:S.tok,p_id:S.edit,p_name:n,p_cat:c,p_photo:S.photo||""},ex)):rpc("coach_add_player",Object.assign({p_tok:S.tok,p_branch:S.br,p_name:n,p_cat:c,p_photo:S.photo||""},ex));
   var g=$("pg").value,cur=null;S.players.forEach(function(x){if(x.id===S.edit)cur=x});
   p.then(function(r){var id=S.edit||(r&&r.id),og=cur?(cur.grp||""):"";var a=id&&g!==og?rpc("coach_set_group",{p_tok:S.tok,p_id:id,p_grp:g}):Promise.resolve();
-    return a.then(function(){if(id&&(ph||ph2||(cur&&(cur.phone||cur.phone2))))return rpc("coach_set_guardian",{p_tok:S.tok,p_id:id,p_phone:ph,p_phone2:ph2})})})
+    return a.then(function(){if(id&&(ph||ph2||(cur&&(cur.phone||cur.phone2))))return rpc("coach_set_guardian",{p_tok:S.tok,p_id:id,p_phone:ph,p_phone2:ph2})})
+      .then(function(){if(id&&(cp||(cur&&cur.cpr)))return rpc("coach_set_cpr",{p_tok:S.tok,p_id:id,p_cpr:cp})})})
    .then(function(){toast("تم الحفظ");coachHome("pls")}).catch(function(e){$("sb").disabled=false;authFail(e)});
 }
 function rmPl(){if(!confirm("إزالة هذا اللاعب من الفرع؟ لن يظهر لأولياء الأمور."))return;rpc("coach_remove_player",{p_tok:S.tok,p_id:S.edit}).then(function(){toast("تمت الإزالة");coachHome("pls")}).catch(authFail)}
@@ -878,7 +901,7 @@ function regDraw(){
 function regS1(){
   return'<div class="fc"><h2>'+T("بيانات اللاعب","Player details")+'</h2>'+
    '<div class="fl"><label>'+T("اسم اللاعب (ثلاثي)","Player full name (3 names)")+'</label><input id="rn" value="'+esc(REG.name)+'" autocomplete="off" placeholder="'+T("مثال: أحمد محمد علي","e.g. Ahmed Mohammed Ali")+'"></div>'+
-   '<div class="fl"><label>'+T("الرقم الشخصي للاعب (9 أرقام)","Player's personal number / CPR (9 digits)")+'</label><input id="rc" class="ltr" inputmode="numeric" maxlength="9" autocomplete="off" value="'+esc(REG.cpr)+'" placeholder="000000000"></div>'+
+   '<div class="fl"><label>'+T("الرقم الشخصي للاعب (9 أرقام)","Player's personal number / CPR (9 digits)")+'</label><input id="rc" class="ltr" inputmode="numeric" maxlength="12" autocomplete="off" value="'+esc(REG.cpr)+'" placeholder="000000000"></div>'+
    '<div class="fl"><label>'+T("صورة البطاقة الشخصية","Photo of the ID card")+'</label><div class="up" onclick="$(\'rf\').click()"><div class="pv" id="rpv">'+(REG.img?'<img src="'+REG.img+'" alt="">':'🪪')+'</div><div><b id="rt">'+(REG.img?T("تم رفع الصورة ✓","Photo added ✓"):T("اضغط لرفع الصورة","Tap to upload"))+'</b><div class="muted">'+T("من الكاميرا أو المعرض، واضحة وكاملة","From camera or gallery, clear and complete")+'</div></div></div><input id="rf" type="file" accept="image/*" style="display:none" onchange="regImg(this)"></div></div>';
 }
 function regImg(inp){
