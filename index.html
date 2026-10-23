@@ -84,6 +84,20 @@ label{display:block;font-size:13px;color:var(--mut);margin-top:12px}
 .tag.org{background:#fef3c7;color:#b45309;border-color:transparent}
 details summary{cursor:pointer;color:var(--mut);font-size:13px;margin-top:10px}
 .money{font-weight:700}
+.shopc{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;border-radius:18px;margin-top:14px;padding:16px 18px;color:#fff;font:inherit;text-align:right;cursor:pointer;background:linear-gradient(135deg,#0f1b33,#1e3a8a 60%,#e11d2e);box-shadow:0 6px 18px #0003}
+.shopc b{font-size:19px;display:block}.shopc span{font-size:13px;opacity:.9}.shopc .ic2{font-size:34px}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.prd{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column}
+.pi{position:relative;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:#fff;display:grid;place-items:center;font-size:42px}
+.pi img{width:100%;height:100%;object-fit:contain}
+.so{position:absolute;top:8px;left:8px;background:var(--no);color:#fff;border-radius:999px;padding:2px 10px;font-size:12px}
+.pn{font-weight:700;margin-top:8px;font-size:14px}.pp{color:var(--acc);font-weight:700}
+.cartbar{position:fixed;left:12px;right:12px;bottom:14px;z-index:30;display:flex;justify-content:space-between;align-items:center;background:var(--acc);color:#fff;border-radius:16px;padding:14px 16px;font-weight:700;box-shadow:0 8px 24px #0006;cursor:pointer}
+.sheet{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:60;display:flex;align-items:flex-end}
+.sh{background:var(--card);width:100%;max-width:760px;margin:0 auto;max-height:90vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 16px 26px}
+.pay{background:var(--bg);border:1px dashed var(--mut);border-radius:12px;padding:10px 12px;margin-top:8px}
+.pay .v{direction:ltr;font-weight:700;word-break:break-all;text-align:left}
+.pt{width:52px;height:52px;border-radius:10px;overflow:hidden;background:var(--line);display:grid;place-items:center;flex:none;font-size:24px}.pt img{width:100%;height:100%;object-fit:cover}
 </style>
 </head>
 <body>
@@ -161,6 +175,11 @@ function errMsg(e){var m=e&&e.message||"";
   if(m.indexOf("BAD_IMAGE")>-1)return"الصورة غير صالحة أو كبيرة جداً";
   if(m.indexOf("BAD_PASS")>-1)return"كلمة السر الحالية غير صحيحة";
   if(m.indexOf("WEAK_PASS")>-1)return"كلمة السر الجديدة قصيرة (8 أحرف على الأقل)";
+  if(m.indexOf("BAD_PHONE")>-1)return"رقم الجوال غير صحيح";
+  if(m.indexOf("BAD_ITEMS")>-1)return"بعض المنتجات لم تعد متوفرة، حدّث السلة";
+  if(m.indexOf("BAD_SIZE")>-1)return"المقاس المختار غير متوفر";
+  if(m.indexOf("BAD_NUMBER")>-1)return"رقم اللاعب يجب أن يكون من 0 إلى 99";
+  if(m.indexOf("BAD_PRICE")>-1)return"السعر غير صحيح";
   if(m.indexOf("Failed to fetch")>-1||m.indexOf("NetworkError")>-1)return"تعذر الاتصال بالإنترنت";
   return"حدث خطأ، حاول مرة أخرى"}
 
@@ -177,7 +196,7 @@ function shell(inner,opts){
    '<h1>'+esc(opts.title||"أكاديمية شووت لكرة القدم")+'</h1><p class="ltr">'+esc(opts.sub||"Shoot Football Academy")+'</p>'+(opts.tag?'<p class="t2">'+esc(opts.tag)+'</p>':'')+'</div>'+
    '<div class="wrap">'+inner+'<div class="foot">تواصل واتساب: '+WA.map(function(n){return'<a href="'+waUrl(n)+'" target="_blank" rel="noopener" class="ltr">'+n+'</a>'}).join(" • ")+'<br>تابعونا على <a href="'+INSTA+'" target="_blank" rel="noopener">إنستغرام</a><br>© أكاديمية شووت - البحرين</div></div>';
 }
-function render(h){$("app").innerHTML=h;applySlots();window.scrollTo(0,0)}
+function render(h){var cbr=document.querySelector(".cartbar");if(cbr)cbr.remove();$("app").innerHTML=h;applySlots();window.scrollTo(0,0)}
 /* ====== صور الواجهة (قابلة للتغيير من حساب المدير) ====== */
 var DEF={hero:"IMG_5587.jpeg",gate_parents:"IMG_5624.jpeg",gate_coach:"IMG_5635.jpeg",parents_bg:"IMG_5630.jpeg",coach_bg:"IMG_5632.jpeg",b_karana_main:"IMG_5629.jpeg",b_karana:"IMG_5628.jpeg",b_hamad:"IMG_5626.jpeg",b_isa:"IMG_5631.jpeg",b_tashan:"IMG_5627.jpeg"};
 var SL={},SLID={};
@@ -192,7 +211,7 @@ function galPages(){return Math.max(1,Math.ceil(G.list.length/GP))}
 function galGo(d){G.pg=(G.pg+d+galPages())%galPages();showGal()}
 function galTo(i){G.pg=i;showGal()}
 function gimg(x,full){return x.src?'<img '+(full?'':'loading="lazy" ')+'src="'+esc(x.src)+'" alt="">':'<img alt="" data-gid="'+esc(x.id)+'">'}
-function fillG(root){var a=root.querySelectorAll("img[data-gid]");for(var i=0;i<a.length;i++)(function(im){var id=im.getAttribute("data-gid");if(G.img[id]){im.src=G.img[id];return}rpc("gallery_img",{p_id:id}).then(function(r){if(r&&r.src){G.img[id]=r.src;im.src=r.src}}).catch(function(){})})(a[i])}
+function fillG(root){var a=root.querySelectorAll("img[data-gid]");for(var i=0;i<a.length;i++)(function(im){var id=im.getAttribute("data-gid"),fn=im.getAttribute("data-fn")||"gallery_img";if(G.img[id]){im.src=G.img[id];return}rpc(fn,{p_id:id}).then(function(r){if(r&&r.src){G.img[id]=r.src;im.src=r.src}}).catch(function(){})})(a[i])}
 function showGal(){
   var el=$("gal");if(!el)return;var n=G.list.length;if(!n){el.innerHTML="";return}
   var pc=galPages(),s=G.list.slice(G.pg*GP,G.pg*GP+GP),dots="";for(var i=0;i<pc;i++)dots+='<i class="'+(i===G.pg?"on":"")+'" onclick="galTo('+i+')"></i>';
@@ -212,6 +231,7 @@ function home(){
   setHash("");
   var h='<button class="gt p" data-slot="gate_parents" onclick="parents()"><i>دخول ←</i><b>👨‍👩‍👦 بوابة أولياء الأمور</b><span>تابع تقارير ابنك وحضوره بدون تسجيل دخول</span></button>'+
    '<button class="gt c" data-slot="gate_coach" onclick="coachLogin()"><i>دخول ←</i><b>🧢 بوابة المدربين</b><span>تسجيل الدخول لإدارة اللاعبين والحضور والتقارير</span></button>'+
+   '<button class="shopc" onclick="shop()"><div><b>🛍️ متجر الأكاديمية</b><span>ملابس وجوارب وشنط وقناني مياه بطلب سريع عبر واتساب</span></div><div class="ic2">←</div></button>'+
    '<div class="card"><h2>عن الأكاديمية</h2><p style="margin:0">'+esc(TXT("about","نصنع أبطال الغد عبر 5 فروع بالمملكة. نقدم تدريباً احترافياً للأطفال والناشئين لتطوير القاعدة وصقل الموهوبين والمبتدئين وتأهيلهم للأندية والمنتخبات الوطنية، مع متابعة دقيقة وتقارير دورية تُوثّق تطور كل لاعب خطوة بخطوة."))+'</p><div class="chips">'+BR.map(function(b){return'<span class="tag">'+b.ar+'</span>'}).join("")+'</div></div>'+
    '<div class="card"><h2>تواصل معنا عبر واتساب</h2><div class="muted">للتسجيل والاستفسار عن الاشتراك</div>'+WA.map(function(n){return'<a class="wa" href="'+waUrl(n,"السلام عليكم، أرغب بالاستفسار عن التسجيل في أكاديمية شووت")+'" target="_blank" rel="noopener">💬 واتساب <span class="ltr">'+n+'</span></a>'}).join("")+'</div>'+
    '<h2 style="margin:24px 0 0">صور من الأكاديمية</h2><div id="gal"></div>'+
@@ -306,10 +326,12 @@ function coachHome(tab){
   var al=allowed();if(!al.length){S.tok=null;coachLogin("لا توجد فروع لهذا الحساب");return}
   if(!al.some(function(b){return b.id===S.br}))S.br=al[0].id;
   var h='<div class="tabs">'+al.map(function(b){return'<button class="tab '+(b.id===S.br?"on":"")+'" onclick="setBr(\''+b.id+'\')">'+b.ar+'</button>'}).join("")+'</div>';
-  h+='<div class="tabs" style="padding-top:0">'+(S.role==="admin"?[["stats","📊 الإحصائيات"],["fin","💰 المالية"]]:[]).concat([["att","✅ الحضور"],["rep","📝 التقارير"],["pls","👥 اللاعبون"],["ann","📢 إعلانات"]]).concat(S.role==="admin"?[["exp","📄 تصدير"],["gal","🖼️ المعرض"]]:[]).concat([["pw","🔑 كلمة السر"]]).map(function(t){return'<button class="tab '+(t[0]===S.tab?"on":"")+'" onclick="coachHome(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div><div id="cb"><p class="muted" style="text-align:center">جاري التحميل…</p></div>';
+  h+='<div class="tabs" style="padding-top:0">'+(S.role==="admin"?[["stats","📊 الإحصائيات"],["fin","💰 المالية"]]:[]).concat([["att","✅ الحضور"],["rep","📝 التقارير"],["pls","👥 اللاعبون"],["ann","📢 إعلانات"]]).concat(S.role==="admin"?[["prod","🛍️ المنتجات"],["ord","📦 الطلبات"],["exp","📄 تصدير"],["gal","🖼️ المعرض"]]:[]).concat([["pw","🔑 كلمة السر"]]).map(function(t){return'<button class="tab '+(t[0]===S.tab?"on":"")+'" onclick="coachHome(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div><div id="cb"><p class="muted" style="text-align:center">جاري التحميل…</p></div>';
   render(shell(h,{out:true,bg:"coach_bg",title:"أهلاً "+(S.cname||"مدرب"),sub:brn(S.br).en}));
   if(S.tab==="stats"&&S.role==="admin"){rpc("admin_stats",{p_tok:S.tok,p_day:today()}).then(viewStats).catch(authFail);return}
   if(S.tab==="fin"&&S.role==="admin"){loadFin();return}
+  if(S.tab==="prod"&&S.role==="admin"){viewProd();return}
+  if(S.tab==="ord"&&S.role==="admin"){viewOrd();return}
   if(S.tab==="exp"&&S.role==="admin"){viewExp();return}
   if(S.tab==="gal"&&S.role==="admin"){viewGalAdmin();return}
   if(S.tab==="pw"){viewPw();return}
@@ -618,6 +640,151 @@ function doPw(){
   rpc("coach_change_pass",{p_tok:S.tok,p_old:o,p_new:a}).then(function(){toast("تم تغيير كلمة السر");viewPw()}).catch(function(x){$("pbb").disabled=false;if((x.message||"").indexOf("AUTH")>-1)authFail(x);else e.textContent=errMsg(x)});
 }
 
+/* ====== المتجر ====== */
+var SHOP={items:[],info:{},cat:"",cart:[],f:{}};
+try{SHOP.cart=JSON.parse(ssGet("cart")||"[]")||[]}catch(e){SHOP.cart=[]}
+var CATS=[["tshirt","تيشيرت"],["jacket","جاكيت"],["hoodie","هودي"],["socks","جوارب"],["bag","شنط"],["bottle","قناني مياه"],["other","أخرى"]];
+var PRE={tshirt:"4,6,8,10,12,14,16",jacket:"4,6,8,10,12,14,16",hoodie:"4,6,8,10,12,14,16",socks:"32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47"};
+function catAr(c){for(var i=0;i<CATS.length;i++)if(CATS[i][0]===c)return CATS[i][1];return"أخرى"}
+function szl(cat,s){if(!s)return"";if(cat==="tshirt"||cat==="jacket"||cat==="hoodie")return s+" سنوات";if(cat==="socks")return"مقاس حذاء "+s;return s}
+function cartSave(){ssSet("cart",JSON.stringify(SHOP.cart))}
+function cartCount(){var n=0;SHOP.cart.forEach(function(x){n+=x.qty});return n}
+function cartTotal(){var t=0;SHOP.cart.forEach(function(x){t+=x.price*x.qty});return t}
+function copyTxt(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast("تم النسخ")},function(){prompt("انسخ الرقم",t)});else prompt("انسخ الرقم",t)}
+function pimg(p,thumb){
+  if(p.img)return'<img loading="lazy" src="'+esc(p.img)+'" alt="">';
+  if(p.has_img)return'<img alt="" data-gid="'+esc(p.id)+'" data-fn="shop_img">';
+  return thumb?'🛍️':'<span>🛍️</span>'}
+function shop(){
+  setHash("#/shop");
+  render(shell('<p class="muted" style="text-align:center;margin-top:30px">جاري التحميل…</p>',{back:"home()",bg:"hero",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}));
+  Promise.all([rpc("shop_list"),rpc("shop_info").catch(function(){return{}})]).then(function(r){SHOP.items=r[0]||[];SHOP.info=r[1]||{};drawShop()})
+   .catch(function(e){render(shell('<div class="card"><p class="err">'+errMsg(e)+'</p></div>',{back:"home()",bg:"hero",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}))});
+}
+function drawShop(){
+  var cats={};SHOP.items.forEach(function(p){cats[p.cat]=1});
+  var h='<div class="tabs"><button class="tab '+(!SHOP.cat?"on":"")+'" onclick="SHOP.cat=\'\';drawShop()">الكل</button>'+CATS.filter(function(c){return cats[c[0]]}).map(function(c){return'<button class="tab '+(SHOP.cat===c[0]?"on":"")+'" onclick="SHOP.cat=\''+c[0]+'\';drawShop()">'+c[1]+'</button>'}).join("")+'</div>';
+  var L=SHOP.items.filter(function(p){return!SHOP.cat||p.cat===SHOP.cat});
+  h+=L.length?'<div class="pg">'+L.map(function(p){return'<div class="prd"><div class="pi">'+pimg(p)+(p.soldout?'<b class="so">نفد</b>':'')+'</div><div class="pn">'+esc(p.name)+'</div><div class="pp">'+money(p.price)+'</div><button class="btn sm block" '+(p.soldout?'disabled>غير متوفر':'onclick="pick(\''+p.id+'\')">اختيار')+'</button></div>'}).join("")+'</div>':'<div class="card"><p class="muted">لا توجد منتجات حالياً، تابعونا قريباً.</p></div>';
+  h+='<div style="height:80px"></div>';
+  render(shell(h,{back:"home()",bg:"hero",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}));
+  fillG($("app"));cartBar();
+}
+function cartBar(){
+  var o=document.querySelector(".cartbar");if(o)o.remove();
+  if(!cartCount())return;
+  var d=document.createElement("div");d.className="cartbar";d.onclick=checkout;
+  d.innerHTML='<span>🛒 السلة ('+cartCount()+')</span><span>'+money(cartTotal())+'</span><span>إتمام الطلب ←</span>';
+  document.body.appendChild(d);
+}
+function closeSheet(){var s=$("sheet");if(s)s.remove()}
+function pick(id){
+  var p=null;SHOP.items.forEach(function(x){if(x.id===id)p=x});if(!p)return;
+  closeSheet();
+  var q="";for(var i=1;i<=10;i++)q+='<option>'+i+'</option>';
+  var d=document.createElement("div");d.className="sheet";d.id="sheet";
+  d.innerHTML='<div class="sh"><div class="row sp"><h2 style="margin:0">'+esc(p.name)+'</h2><button class="btn ghost sm fit" onclick="closeSheet()">✕</button></div><div class="muted">'+money(p.price)+' للقطعة</div>'+
+   (p.sizes&&p.sizes.length?'<label>'+(p.cat==="socks"?"رقم الحذاء":"المقاس (بالسنوات)")+'</label><select id="sz">'+p.sizes.map(function(s){return'<option value="'+esc(s)+'">'+esc(szl(p.cat,s))+'</option>'}).join("")+'</select>':'')+
+   (p.custom?'<label>الاسم على الظهر (اختياري)</label><input id="snm" maxlength="14" placeholder="مثال: AHMED" autocapitalize="characters" autocomplete="off"><label>رقم اللاعب على الظهر (اختياري، من 0 إلى 99)</label><input id="sno" inputmode="numeric" maxlength="2" placeholder="مثال: 10" autocomplete="off">':'')+
+   '<label>الكمية</label><select id="sq">'+q+'</select><button class="btn red block" onclick="addCart(\''+id+'\')">إضافة إلى السلة</button></div>';
+  d.onclick=function(e){if(e.target===d)closeSheet()};
+  document.body.appendChild(d);
+}
+function addCart(id){
+  var p=null;SHOP.items.forEach(function(x){if(x.id===id)p=x});if(!p)return;
+  var sz=$("sz")?$("sz").value:"",nm=$("snm")?$("snm").value.replace(/[^\w \-.؀-ۿ]/g,"").trim().slice(0,14):"",no=$("sno")?$("sno").value.trim():"",qty=parseInt($("sq").value,10)||1;
+  if(no&&!/^\d{1,2}$/.test(no)){toast("رقم اللاعب من 0 إلى 99");return}
+  var hit=null;SHOP.cart.forEach(function(x){if(x.id===id&&x.size===sz&&(x.nm||"")===nm&&(x.no||"")===no)hit=x});
+  if(hit)hit.qty=Math.min(20,hit.qty+qty);else SHOP.cart.push({id:id,name:p.name,cat:p.cat,price:+p.price,size:sz,qty:qty,nm:nm,no:no});
+  cartSave();closeSheet();toast("تمت الإضافة إلى السلة");cartBar();
+}
+function cartDel(i){saveF();SHOP.cart.splice(i,1);cartSave();checkout()}
+function saveF(){var f=SHOP.f;["on","op","ol","ob","ox"].forEach(function(k){if($(k))f[k]=$(k).value})}
+function payBox(){
+  var I=SHOP.info||{};
+  function row(l,v){return v?'<div class="pay"><div class="muted">'+l+'</div><div class="row"><div class="v">'+esc(v)+'</div><button class="btn sm fit" onclick="copyTxt(\''+esc(v)+'\')">نسخ</button></div></div>':''}
+  return'<div class="card"><h2>الدفع</h2><div class="muted">حوّل مبلغ الطلب، ثم أرسل صورة إيصال التحويل في الواتساب بعد فتح الرسالة.</div>'+row("بنفت (Benefit Pay)",I.benefit)+row("آيبان (IBAN)",I.iban)+(I.holder?'<div class="muted" style="margin-top:8px">اسم الحساب: <b>'+esc(I.holder)+'</b></div>':'')+'</div>';
+}
+function checkout(){
+  setHash("#/shop");
+  if(!SHOP.cart.length){shop();return}
+  var f=SHOP.f;
+  var h='<div class="card"><h2>سلتك</h2>'+SHOP.cart.map(function(x,i){return'<div class="gl" style="align-items:flex-start"><div style="flex:1"><div class="n">'+esc(x.name)+'</div><div class="muted">'+[x.size?szl(x.cat,x.size):"","الكمية: "+x.qty].filter(Boolean).join(" • ")+'</div>'+((x.nm||x.no)?'<div class="muted">على الظهر: '+esc(x.nm||"")+(x.no?' رقم '+esc(x.no):'')+'</div>':'')+'</div><div class="n">'+money(x.price*x.qty)+'</div><button class="btn ghost sm" onclick="cartDel('+i+')">حذف</button></div>'}).join("")+
+   '<div class="row sp" style="margin-top:10px"><b>المجموع</b><b>'+money(cartTotal())+'</b></div></div>'+
+   '<div class="card"><h2>بيانات الطلب</h2><label style="margin-top:0">اسم ولي الأمر</label><input id="on" value="'+esc(f.on||"")+'"><label>رقم الجوال</label><input id="op" type="tel" inputmode="tel" value="'+esc(f.op||"")+'"><label>اسم اللاعب (اختياري)</label><input id="ol" value="'+esc(f.ol||"")+'">'+
+   '<label>فرع الاستلام</label><select id="ob">'+BR.map(function(b){return'<option value="'+b.id+'"'+(f.ob===b.id?" selected":"")+'>'+b.ar+'</option>'}).join("")+'</select><label>ملاحظات (اختياري)</label><textarea id="ox">'+esc(f.ox||"")+'</textarea></div>'+
+   payBox()+'<div id="oe" class="err"></div><button class="btn red block" id="obtn" onclick="sendOrder()">إرسال الطلب عبر واتساب</button><button class="btn ghost block" onclick="shop()">+ إضافة منتجات أخرى</button>';
+  render(shell(h,{back:"shop()",bg:"hero",title:"إتمام الطلب",sub:"Checkout"}));
+}
+function sendOrder(){
+  saveF();var f=SHOP.f,e=$("oe");e.textContent="";
+  if((f.on||"").trim().length<2){e.textContent="اكتب اسم ولي الأمر";return}
+  if((f.op||"").replace(/\D/g,"").length<8){e.textContent="اكتب رقم جوال صحيح";return}
+  var b=$("obtn");b.disabled=true;b.textContent="جاري إرسال الطلب…";
+  rpc("shop_order",{p_name:f.on,p_phone:f.op,p_player:f.ol||"",p_branch:f.ob||"",p_note:f.ox||"",
+    p_items:SHOP.cart.map(function(x){return{id:x.id,size:x.size,qty:x.qty,nm:x.nm,no:x.no}})}).then(function(r){
+    var I=SHOP.info||{},t="🛍️ طلب جديد من متجر أكاديمية شووت\nرقم الطلب: #"+r.no+"\nالاسم: "+f.on+"\nالجوال: "+f.op+(f.ol?"\nاسم اللاعب: "+f.ol:"")+"\nفرع الاستلام: "+brn(f.ob).ar+"\n──────────\n";
+    r.lines.forEach(function(x,i){t+=(i+1)+") "+x.name+(x.size?"\n   المقاس: "+szl(x.cat,x.size):"")+"\n   الكمية: "+x.qty+((x.nm||x.no)?"\n   على الظهر: "+(x.nm||"-")+(x.no?" | الرقم: "+x.no:""):"")+"\n   السعر: "+money(x.sum)+"\n"});
+    t+="──────────\nالمجموع: "+money(r.total)+(f.ox?"\nملاحظات: "+f.ox:"")+"\n\nالدفع: بنفت "+(I.benefit||"")+" / آيبان "+(I.iban||"")+"\nسأرفق صورة إيصال التحويل هنا ✅";
+    var url=waUrl(I.wa||WA[0],t);SHOP.cart=[];cartSave();SHOP.f={};
+    render(shell('<div class="card" style="text-align:center"><h2>تم تسجيل طلبك ✅</h2><p>رقم الطلب: <b>#'+r.no+'</b><br>المجموع: <b>'+money(r.total)+'</b></p><p class="muted">اضغط الزر التالي لفتح واتساب وإرسال الطلب، ثم أرفق صورة إيصال التحويل. لن يتم تجهيز الطلب قبل وصول الإيصال.</p><a class="wa" href="'+esc(url)+'" target="_blank" rel="noopener">💬 إرسال الطلب إلى واتساب</a></div>'+payBox()+'<button class="btn ghost block" onclick="shop()">الرجوع للمتجر</button>',{back:"home()",bg:"hero",title:"شكراً لك",sub:"Order received"}));
+    setTimeout(function(){location.href=url},400);
+  }).catch(function(x){b.disabled=false;b.textContent="إرسال الطلب عبر واتساب";e.textContent=errMsg(x)});
+}
+
+/* --- إدارة المنتجات والطلبات (للمدير) --- */
+var AP={list:[],info:{},img:undefined};
+function pthumb(p){return pimg(p,1)}
+function viewProd(){Promise.all([rpc("admin_shop_list",{p_tok:S.tok}),rpc("shop_info")]).then(function(r){AP.list=r[0];AP.info=r[1]||{};drawProd()}).catch(authFail)}
+function drawProd(){
+  var I=AP.info,h='<div class="card"><h2>بيانات الدفع والطلبات</h2><div class="muted">تظهر للزبون عند إتمام الطلب.</div>'+
+   [["benefit","رقم بنفت"],["iban","رقم الآيبان"],["holder","اسم صاحب الحساب"],["wa","رقم واتساب استقبال الطلبات"]].map(function(f){return'<label>'+f[1]+'</label><div class="row"><input id="ss_'+f[0]+'" value="'+esc(I[f[0]]||"")+'" style="margin:0"><button class="btn sm fit" onclick="saveSet(\''+f[0]+'\')">حفظ</button></div>'}).join("")+'</div>'+
+   '<div class="card"><div class="row sp"><h2 style="margin:0">المنتجات ('+AP.list.length+')</h2><button class="btn red sm fit" onclick="editProd(null)">+ منتج</button></div><div class="muted">لا يظهر المنتج للزبائن إلا إذا فعّلته وحددت سعره.</div></div>';
+  AP.list.forEach(function(p){h+='<div class="pl static"><div class="pt">'+pthumb(p)+'</div><div style="flex:1"><div class="n">'+esc(p.name)+'</div><div class="c">'+catAr(p.cat)+' • '+money(p.price)+'</div><div style="margin-top:4px">'+(p.active?'<span class="tag grn">ظاهر</span>':'<span class="tag">مخفي</span>')+(p.soldout?' <span class="tag red">نفد</span>':'')+'</div></div><button class="btn ghost sm fit" onclick="editProd(\''+p.id+'\')">تعديل</button></div>'});
+  $("cb").innerHTML=h;fillG($("cb"));
+}
+function saveSet(k){rpc("admin_set_shop",{p_tok:S.tok,p_k:k,p_v:$("ss_"+k).value}).then(function(){toast("تم الحفظ");AP.info[k]=$("ss_"+k).value}).catch(authFail)}
+function editProd(id){
+  var p=null;AP.list.forEach(function(x){if(x.id===id)p=x});AP.edit=id;AP.img=undefined;
+  var co=CATS.map(function(c){return'<option value="'+c[0]+'"'+((p?p.cat:"tshirt")===c[0]?" selected":"")+'>'+c[1]+'</option>'}).join("");
+  $("cb").innerHTML='<div class="card"><h2>'+(p?"تعديل منتج":"منتج جديد")+'</h2><label style="margin-top:0">اسم المنتج</label><input id="pr_n" value="'+esc(p?p.name:"")+'">'+
+   '<label>النوع</label><select id="pr_c" onchange="prCat()">'+co+'</select>'+
+   '<label>السعر (د.ب)</label><input id="pr_p" type="number" inputmode="decimal" step="0.5" min="0" value="'+(p?p.price:"")+'">'+
+   '<label>المقاسات (مفصولة بفاصلة، اتركها فارغة إن لم يكن للمنتج مقاسات)</label><input id="pr_s" value="'+esc(p?(p.sizes||[]).join(","):PRE.tshirt)+'" class="ltr">'+
+   '<label>الاسم ورقم اللاعب على الظهر</label><select id="pr_u"><option value="0">غير متاح</option><option value="1"'+(p&&p.custom||!p?" selected":"")+'>متاح (تيشيرت/جاكيت/هودي)</option></select>'+
+   '<label>الحالة</label><select id="pr_a"><option value="1"'+(p&&p.active?" selected":"")+'>ظاهر في المتجر</option><option value="0"'+(p&&!p.active?" selected":"")+(p?"":" selected")+'>مخفي</option></select>'+
+   '<label>التوفر</label><select id="pr_o"><option value="0">متوفر</option><option value="1"'+(p&&p.soldout?" selected":"")+'>نفد</option></select>'+
+   '<label>الصورة</label><div class="row" style="margin-top:6px"><div id="pr_v" class="pt fit">'+(p?pthumb(p):'🛍️')+'</div><input type="file" accept="image/*" onchange="prImg(this)" style="margin:0"></div>'+
+   '<div class="row" style="margin-top:14px"><button class="btn red" id="pr_b" onclick="saveProd()">حفظ</button><button class="btn ghost" onclick="viewProd()">إلغاء</button></div>'+
+   (p?'<button class="btn ghost block" style="color:var(--no)" onclick="delProd()">حذف المنتج</button>':'')+'</div>';
+  fillG($("cb"));
+}
+function prCat(){var c=$("pr_c").value,s=$("pr_s").value.trim(),isPre=!s;for(var k in PRE)if(PRE[k]===s)isPre=true;if(isPre)$("pr_s").value=PRE[c]||"";$("pr_u").value=(c==="tshirt"||c==="jacket"||c==="hoodie")?"1":"0"}
+function prImg(inp){var f=inp.files&&inp.files[0];if(!f)return;upImg(f,800,.75,function(d){AP.img=d;$("pr_v").innerHTML='<img src="'+d+'" alt="">'})}
+function saveProd(){
+  var n=$("pr_n").value.trim(),pr=parseFloat($("pr_p").value);
+  if(n.length<2){toast("اكتب اسم المنتج");return}
+  if(isNaN(pr)||pr<0){toast("اكتب السعر");return}
+  if($("pr_a").value==="1"&&pr<=0){toast("حدد السعر قبل إظهار المنتج");return}
+  var sz=$("pr_s").value.split(/[,،\s]+/).filter(Boolean);
+  $("pr_b").disabled=true;
+  rpc("admin_product_save",{p_tok:S.tok,p_id:AP.edit,p_name:n,p_cat:$("pr_c").value,p_price:pr,p_sizes:sz,p_custom:$("pr_u").value==="1",p_active:$("pr_a").value==="1",p_soldout:$("pr_o").value==="1",p_img:AP.img===undefined?null:AP.img})
+   .then(function(){toast("تم الحفظ");viewProd()}).catch(function(e){$("pr_b").disabled=false;authFail(e)});
+}
+function delProd(){if(!confirm("حذف هذا المنتج نهائياً؟"))return;rpc("admin_product_del",{p_tok:S.tok,p_id:AP.edit}).then(function(){toast("تم الحذف");viewProd()}).catch(authFail)}
+var OST=[["new","جديد"],["paid","مدفوع"],["ready","جاهز للاستلام"],["done","تم التسليم"],["cancel","ملغي"]];
+function viewOrd(){rpc("admin_orders",{p_tok:S.tok}).then(function(l){
+  var h='<div class="card"><h2>الطلبات ('+l.length+')</h2><div class="muted">آخر 100 طلب. غيّر الحالة بعد استلام الإيصال في الواتساب.</div></div>';
+  if(!l.length)h+='<div class="card"><p class="muted">لا توجد طلبات بعد.</p></div>';
+  l.forEach(function(o){
+    h+='<div class="card"><div class="row sp"><b>#'+o.no+' • '+fmt(o.day)+'</b><select style="width:auto;margin:0" onchange="setOrd(\''+o.id+'\',this.value)">'+OST.map(function(s){return'<option value="'+s[0]+'"'+(o.status===s[0]?" selected":"")+'>'+s[1]+'</option>'}).join("")+'</select></div>'+
+     '<div style="margin-top:8px"><b>'+esc(o.name)+'</b> • <a href="tel:'+esc(o.phone)+'" class="ltr">'+esc(o.phone)+'</a> • <a href="https://wa.me/'+(o.phone.length===8?"973":"")+esc(o.phone)+'" target="_blank" rel="noopener">واتساب</a></div>'+
+     '<div class="muted">'+(o.player?'اللاعب: '+esc(o.player)+' • ':'')+(o.branch?'الاستلام: '+brn(o.branch).ar:'')+'</div>'+
+     o.items.map(function(x){return'<div class="gl"><div style="flex:1"><div class="n">'+esc(x.name)+' × '+x.qty+'</div><div class="muted">'+[x.size?szl(x.cat,x.size):"",(x.nm||x.no)?"على الظهر: "+(x.nm||"-")+(x.no?" رقم "+x.no:""):""].filter(Boolean).map(esc).join(" • ")+'</div></div><div>'+money(x.sum)+'</div></div>'}).join("")+
+     '<div class="row sp" style="margin-top:8px"><b>المجموع</b><b>'+money(o.total)+'</b></div>'+(o.note?'<div class="muted">ملاحظات: '+esc(o.note)+'</div>':'')+'</div>'});
+  $("cb").innerHTML=h}).catch(authFail)}
+function setOrd(id,s){rpc("admin_order_status",{p_tok:S.tok,p_id:id,p_status:s}).then(function(){toast("تم تحديث الحالة")}).catch(authFail)}
+
 /* --- الإعلانات --- */
 function viewAnn(){
   var h='<div class="card"><h2>إعلان جديد</h2><label style="margin-top:0">يظهر في</label><select id="ab">'+(S.role==="admin"?'<option value="">كل الفروع</option>':'')+allowed().map(function(b){return'<option value="'+b.id+'"'+(b.id===S.br?" selected":"")+'>'+b.ar+'</option>'}).join("")+'</select>'+
@@ -634,6 +801,7 @@ function route(){
   var h=location.hash,m;
   if((m=h.match(/^#\/p\/([0-9a-f-]{36})$/i)))return profile(m[1]);
   if((m=h.match(/^#\/b\/(\w+)$/)))return branch(m[1]);
+  if(h==="#/shop")return shop();
   if(h==="#/parents")return parents();
   if(h==="#/coach")return coachLogin();
   home();
