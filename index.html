@@ -84,7 +84,7 @@ label{display:block;font-size:13px;color:var(--mut);margin-top:12px}
 .tag.org{background:#fef3c7;color:#b45309;border-color:transparent}
 details summary{cursor:pointer;color:var(--mut);font-size:13px;margin-top:10px}
 .money{font-weight:700}
-.shopc{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;border-radius:18px;margin-top:14px;padding:16px 18px;color:#fff;font:inherit;text-align:right;cursor:pointer;background:linear-gradient(135deg,#0f1b33,#1e3a8a 60%,#e11d2e);box-shadow:0 6px 18px #0003}
+.shopc{display:flex;align-items:flex-end;justify-content:space-between;width:100%;min-height:120px;border:0;border-radius:18px;margin-top:14px;padding:16px 18px;color:#fff;font:inherit;text-align:right;cursor:pointer;background:linear-gradient(90deg,rgba(15,27,51,.92),rgba(30,58,138,.55) 60%,rgba(225,29,46,.55)),var(--img,none) center/cover,var(--pri2);box-shadow:0 6px 18px #0003}
 .shopc b{font-size:19px;display:block}.shopc span{font-size:13px;opacity:.9}.shopc .ic2{font-size:34px}
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .prd{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column}
@@ -198,7 +198,7 @@ function shell(inner,opts){
 }
 function render(h){var cbr=document.querySelector(".cartbar");if(cbr)cbr.remove();$("app").innerHTML=h;applySlots();window.scrollTo(0,0)}
 /* ====== صور الواجهة (قابلة للتغيير من حساب المدير) ====== */
-var DEF={hero:"IMG_5587.jpeg",gate_parents:"IMG_5624.jpeg",gate_coach:"IMG_5635.jpeg",parents_bg:"IMG_5630.jpeg",coach_bg:"IMG_5632.jpeg",b_karana_main:"IMG_5629.jpeg",b_karana:"IMG_5628.jpeg",b_hamad:"IMG_5626.jpeg",b_isa:"IMG_5631.jpeg",b_tashan:"IMG_5627.jpeg"};
+var DEF={hero:"IMG_5587.jpeg",gate_parents:"IMG_5624.jpeg",gate_coach:"IMG_5635.jpeg",parents_bg:"IMG_5630.jpeg",coach_bg:"IMG_5632.jpeg",b_karana_main:"IMG_5629.jpeg",b_karana:"IMG_5628.jpeg",b_hamad:"IMG_5626.jpeg",b_isa:"IMG_5631.jpeg",b_tashan:"IMG_5627.jpeg",shop_card:"IMG_5625.jpeg",shop_bg:"IMG_5587.jpeg"};
 var SL={},SLID={};
 function applySlots(){var a=document.querySelectorAll("[data-slot]");for(var i=0;i<a.length;i++){var k=a[i].getAttribute("data-slot"),u=SL[k]||DEF[k];if(u)a[i].style.setProperty("--img",'url("'+u+'")')}}
 function loadSlots(){return rpc("site_slots").then(function(l){SL={};SLID={};return Promise.all((l||[]).map(function(x){SLID[x.key]=x.id;if(x.src){SL[x.key]=x.src;return}return rpc("gallery_img",{p_id:x.id}).then(function(r){if(r&&r.src)SL[x.key]=r.src}).catch(function(){})}))}).then(applySlots).catch(function(){})}
@@ -231,7 +231,7 @@ function home(){
   setHash("");
   var h='<button class="gt p" data-slot="gate_parents" onclick="parents()"><i>دخول ←</i><b>👨‍👩‍👦 بوابة أولياء الأمور</b><span>تابع تقارير ابنك وحضوره بدون تسجيل دخول</span></button>'+
    '<button class="gt c" data-slot="gate_coach" onclick="coachLogin()"><i>دخول ←</i><b>🧢 بوابة المدربين</b><span>تسجيل الدخول لإدارة اللاعبين والحضور والتقارير</span></button>'+
-   '<button class="shopc" onclick="shop()"><div><b>🛍️ متجر الأكاديمية</b><span>ملابس وجوارب وشنط وقناني مياه بطلب سريع عبر واتساب</span></div><div class="ic2">←</div></button>'+
+   '<button class="shopc" data-slot="shop_card" onclick="shop()"><div><b>🛍️ متجر الأكاديمية</b><span>ملابس وجوارب وشنط وقناني مياه بطلب سريع عبر واتساب</span></div><div class="ic2">←</div></button>'+
    '<div class="card"><h2>عن الأكاديمية</h2><p style="margin:0">'+esc(TXT("about","نصنع أبطال الغد عبر 5 فروع بالمملكة. نقدم تدريباً احترافياً للأطفال والناشئين لتطوير القاعدة وصقل الموهوبين والمبتدئين وتأهيلهم للأندية والمنتخبات الوطنية، مع متابعة دقيقة وتقارير دورية تُوثّق تطور كل لاعب خطوة بخطوة."))+'</p><div class="chips">'+BR.map(function(b){return'<span class="tag">'+b.ar+'</span>'}).join("")+'</div></div>'+
    '<div class="card"><h2>تواصل معنا عبر واتساب</h2><div class="muted">للتسجيل والاستفسار عن الاشتراك</div>'+WA.map(function(n){return'<a class="wa" href="'+waUrl(n,"السلام عليكم، أرغب بالاستفسار عن التسجيل في أكاديمية شووت")+'" target="_blank" rel="noopener">💬 واتساب <span class="ltr">'+n+'</span></a>'}).join("")+'</div>'+
    '<h2 style="margin:24px 0 0">صور من الأكاديمية</h2><div id="gal"></div>'+
@@ -596,7 +596,7 @@ function doExport(){
 }
 
 /* --- إدارة المعرض وصور الواجهة (للمدير) --- */
-var SLOTS=[["hero","الصورة الرئيسية (أعلى الصفحة)"],["gate_parents","بطاقة بوابة أولياء الأمور"],["gate_coach","بطاقة بوابة المدربين"],["parents_bg","خلفية صفحة اختيار الفرع"],["coach_bg","خلفية صفحات المدربين"]].concat(BR.map(function(b){return["b_"+b.id,"خلفية "+b.ar]}));
+var SLOTS=[["hero","الصورة الرئيسية (أعلى الصفحة)"],["gate_parents","بطاقة بوابة أولياء الأمور"],["gate_coach","بطاقة بوابة المدربين"],["parents_bg","خلفية صفحة اختيار الفرع"],["coach_bg","خلفية صفحات المدربين"],["shop_card","بطاقة المتجر في الصفحة الرئيسية"],["shop_bg","خلفية صفحة المتجر"]].concat(BR.map(function(b){return["b_"+b.id,"خلفية "+b.ar]}));
 function viewGalAdmin(){
   rpc("gallery_list").then(function(l){G.list=l;drawGalAdmin()}).catch(authFail);
 }
@@ -657,9 +657,9 @@ function pimg(p,thumb){
   return thumb?'🛍️':'<span>🛍️</span>'}
 function shop(){
   setHash("#/shop");
-  render(shell('<p class="muted" style="text-align:center;margin-top:30px">جاري التحميل…</p>',{back:"home()",bg:"hero",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}));
+  render(shell('<p class="muted" style="text-align:center;margin-top:30px">جاري التحميل…</p>',{back:"home()",bg:"shop_bg",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}));
   Promise.all([rpc("shop_list"),rpc("shop_info").catch(function(){return{}})]).then(function(r){SHOP.items=r[0]||[];SHOP.info=r[1]||{};drawShop()})
-   .catch(function(e){render(shell('<div class="card"><p class="err">'+errMsg(e)+'</p></div>',{back:"home()",bg:"hero",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}))});
+   .catch(function(e){render(shell('<div class="card"><p class="err">'+errMsg(e)+'</p></div>',{back:"home()",bg:"shop_bg",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}))});
 }
 function drawShop(){
   var cats={};SHOP.items.forEach(function(p){cats[p.cat]=1});
@@ -667,7 +667,7 @@ function drawShop(){
   var L=SHOP.items.filter(function(p){return!SHOP.cat||p.cat===SHOP.cat});
   h+=L.length?'<div class="pg">'+L.map(function(p){return'<div class="prd"><div class="pi">'+pimg(p)+(p.soldout?'<b class="so">نفد</b>':'')+'</div><div class="pn">'+esc(p.name)+'</div><div class="pp">'+money(p.price)+'</div><button class="btn sm block" '+(p.soldout?'disabled>غير متوفر':'onclick="pick(\''+p.id+'\')">اختيار')+'</button></div>'}).join("")+'</div>':'<div class="card"><p class="muted">لا توجد منتجات حالياً، تابعونا قريباً.</p></div>';
   h+='<div style="height:80px"></div>';
-  render(shell(h,{back:"home()",bg:"hero",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}));
+  render(shell(h,{back:"home()",bg:"shop_bg",title:"متجر الأكاديمية",sub:"Shoot Academy Store"}));
   fillG($("app"));cartBar();
 }
 function cartBar(){
@@ -714,7 +714,7 @@ function checkout(){
    '<div class="card"><h2>بيانات الطلب</h2><label style="margin-top:0">اسم ولي الأمر</label><input id="on" value="'+esc(f.on||"")+'"><label>رقم الجوال</label><input id="op" type="tel" inputmode="tel" value="'+esc(f.op||"")+'"><label>اسم اللاعب (اختياري)</label><input id="ol" value="'+esc(f.ol||"")+'">'+
    '<label>فرع الاستلام</label><select id="ob">'+BR.map(function(b){return'<option value="'+b.id+'"'+(f.ob===b.id?" selected":"")+'>'+b.ar+'</option>'}).join("")+'</select><label>ملاحظات (اختياري)</label><textarea id="ox">'+esc(f.ox||"")+'</textarea></div>'+
    payBox()+'<div id="oe" class="err"></div><button class="btn red block" id="obtn" onclick="sendOrder()">إرسال الطلب عبر واتساب</button><button class="btn ghost block" onclick="shop()">+ إضافة منتجات أخرى</button>';
-  render(shell(h,{back:"shop()",bg:"hero",title:"إتمام الطلب",sub:"Checkout"}));
+  render(shell(h,{back:"shop()",bg:"shop_bg",title:"إتمام الطلب",sub:"Checkout"}));
 }
 function sendOrder(){
   saveF();var f=SHOP.f,e=$("oe");e.textContent="";
@@ -727,7 +727,7 @@ function sendOrder(){
     r.lines.forEach(function(x,i){t+=(i+1)+") "+x.name+(x.size?"\n   المقاس: "+szl(x.cat,x.size):"")+"\n   الكمية: "+x.qty+((x.nm||x.no)?"\n   على الظهر: "+(x.nm||"-")+(x.no?" | الرقم: "+x.no:""):"")+"\n   السعر: "+money(x.sum)+"\n"});
     t+="──────────\nالمجموع: "+money(r.total)+(f.ox?"\nملاحظات: "+f.ox:"")+"\n\nالدفع: بنفت "+(I.benefit||"")+" / آيبان "+(I.iban||"")+"\nسأرفق صورة إيصال التحويل هنا ✅";
     var url=waUrl(I.wa||WA[0],t);SHOP.cart=[];cartSave();SHOP.f={};
-    render(shell('<div class="card" style="text-align:center"><h2>تم تسجيل طلبك ✅</h2><p>رقم الطلب: <b>#'+r.no+'</b><br>المجموع: <b>'+money(r.total)+'</b></p><p class="muted">اضغط الزر التالي لفتح واتساب وإرسال الطلب، ثم أرفق صورة إيصال التحويل. لن يتم تجهيز الطلب قبل وصول الإيصال.</p><a class="wa" href="'+esc(url)+'" target="_blank" rel="noopener">💬 إرسال الطلب إلى واتساب</a></div>'+payBox()+'<button class="btn ghost block" onclick="shop()">الرجوع للمتجر</button>',{back:"home()",bg:"hero",title:"شكراً لك",sub:"Order received"}));
+    render(shell('<div class="card" style="text-align:center"><h2>تم تسجيل طلبك ✅</h2><p>رقم الطلب: <b>#'+r.no+'</b><br>المجموع: <b>'+money(r.total)+'</b></p><p class="muted">اضغط الزر التالي لفتح واتساب وإرسال الطلب، ثم أرفق صورة إيصال التحويل. لن يتم تجهيز الطلب قبل وصول الإيصال.</p><a class="wa" href="'+esc(url)+'" target="_blank" rel="noopener">💬 إرسال الطلب إلى واتساب</a></div>'+payBox()+'<button class="btn ghost block" onclick="shop()">الرجوع للمتجر</button>',{back:"home()",bg:"shop_bg",title:"شكراً لك",sub:"Order received"}));
     setTimeout(function(){location.href=url},400);
   }).catch(function(x){b.disabled=false;b.textContent="إرسال الطلب عبر واتساب";e.textContent=errMsg(x)});
 }
