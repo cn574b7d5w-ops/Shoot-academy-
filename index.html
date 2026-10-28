@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>أكاديمية شووت لكرة القدم | Shoot Academy</title>
-<meta name="theme-color" content="#0f1b33"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Shoot"><link rel="apple-touch-icon" href="icon.png"><link rel="icon" href="icon.png">
+<meta name="theme-color" content="#0f1b33"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Shoot"><link rel="apple-touch-icon" href="IMG_5357.jpeg">
 <meta name="description" content="بوابة أولياء الأمور والمدربين - أكاديمية شووت لكرة القدم في البحرين">
 
 <style>
@@ -173,7 +173,7 @@ html[dir=ltr] .gt,html[dir=ltr] .shopc,html[dir=ltr] .gate,html[dir=ltr] .brc sm
 /* ====== إعدادات الاتصال بقاعدة البيانات (تلصقها مرة واحدة) ====== */
 var SUPA_URL="https://mfuzalxrstwcibqdzzlc.supabase.co";
 var SUPA_KEY="sb_publishable_edI2u2ntUE6wBNaNl3X94A_9VHDRP2M";
-var LOGO="logo.png", INSTA="https://www.instagram.com/shoot_academy_";
+var LOGO="IMG_5357.jpeg", INSTA="https://www.instagram.com/shoot_academy_";
 var WA=["33364453","33980703"];
 function waUrl(n,t){return"https://wa.me/973"+n+(t?"?text="+encodeURIComponent(t):"")}
 var BR=[
@@ -271,7 +271,7 @@ function shell(inner,opts){
   var lb=PUB?'<div class="tbr"><button class="back lg" onclick="toggleLang()">'+(isEn()?"عربي":"EN")+'</button><button class="back mb" onclick="menu()" aria-label="Menu">☰</button></div>':'';
   var tb=(opts.back||opts.out||PUB)?'<div class="topbar'+(PUB?' tpub':'')+'">'+(opts.back?'<button class="back" onclick="'+opts.back+'">'+(PUB?(isEn()?"← Back":"← رجوع"):"→ رجوع")+'</button>':'<span></span>')+(opts.out?'<button class="back" onclick="logout()">خروج</button>':(PUB?lb:'<span></span>'))+'</div>':'';
   return tb+'<div class="hero'+(opts.bg?' ph':'')+(opts.home?' home':'')+'"'+(opts.bg?' data-slot="'+opts.bg+'"':'')+'>'+
-   '<img class="logo" src="'+LOGO+'" alt="Shoot Academy" onerror="this.style.display=\'none\'">'+
+   '<img src="'+LOGO+'" alt="Shoot Academy" onerror="this.style.display=\'none\'">'+
    '<h1>'+esc(opts.title||T("أكاديمية شووت لكرة القدم","Shoot Football Academy"))+'</h1><p class="ltr">'+esc(opts.sub||T("Shoot Football Academy","أكاديمية شووت لكرة القدم"))+'</p>'+(opts.tag?'<p class="t2">'+esc(opts.tag)+'</p>':'')+'</div>'+
    '<div class="wrap'+(opts.cls?' '+opts.cls:'')+'">'+inner+'<div class="foot">'+T("تواصل واتساب: ","WhatsApp: ")+WA.map(function(n){return'<a href="'+waUrl(n)+'" target="_blank" rel="noopener" class="ltr">'+n+'</a>'}).join(" • ")+'<br>'+T("تابعونا على ","Follow us on ")+'<a href="'+INSTA+'" target="_blank" rel="noopener">'+T("إنستغرام","Instagram")+'</a><br>'+T("© أكاديمية شووت - البحرين","© Shoot Academy - Bahrain")+'</div></div>';
 }
